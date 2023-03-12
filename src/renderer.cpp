@@ -13,9 +13,9 @@ static const glm::vec3 box_vertices[] = {
     {1.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f},
 };
 
-static const GLuint solid_box_indices[] = {0, 2, 1, 2, 3, 1, 0, 4, 6, 6, 2, 0,
-                                           6, 7, 3, 3, 2, 6, 5, 1, 3, 3, 7, 5,
-                                           5, 4, 0, 0, 1, 5, 5, 7, 6, 6, 4, 5};
+static const GLuint solid_box_indices[] = {1, 2, 0, 1, 3, 2, 6, 4, 0, 0, 2, 6,
+                                           3, 7, 6, 6, 2, 3, 3, 1, 5, 5, 7, 3,
+                                           0, 4, 5, 5, 1, 0, 6, 7, 5, 5, 4, 6};
 
 static const GLuint line_box_indices[] = {0, 1, 0, 2, 3, 1, 3, 2, 0, 4, 1, 5,
                                           2, 6, 3, 7, 4, 5, 4, 6, 7, 5, 7, 6};
@@ -36,7 +36,7 @@ Renderer::Renderer() : program(vertex_shader_source, fragment_shader_source) {
 #endif
 
   glEnable(GL_DEPTH_TEST);
-  // glEnable(GL_CULL_FACE);
+  glEnable(GL_CULL_FACE);
   glEnable(GL_LINE_SMOOTH);
   glLineWidth(1.5f);
   glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
