@@ -1,7 +1,7 @@
 #pragma once
 
 static const char *vertex_shader_source = R"glsl(
-  #version 460 core
+  #version 330 core
 
   layout(location = 0) in vec3 aPos;
 
@@ -14,7 +14,7 @@ static const char *vertex_shader_source = R"glsl(
 )glsl";
 
 static const char *fragment_shader_source = R"glsl(
-  #version 460 core
+  #version 330 core
 
   out vec4 FragColor;
   uniform vec3 color;

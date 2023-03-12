@@ -3,6 +3,7 @@
 #include "SDL_events.h"
 #include "SDL_scancode.h"
 #include "camera.hpp"
+#include "renderer.hpp"
 #include "types.hpp"
 
 enum Keystate : u8 {
@@ -13,6 +14,7 @@ enum Keystate : u8 {
 };
 
 class Game {
+  Renderer m_renderer;
   Camera m_camera;
   Keystate m_keystates[SDL_NUM_SCANCODES] = {Keystate::RELEASED};
   u64 m_lastframetime;
@@ -21,7 +23,7 @@ public:
   Game();
   ~Game();
   void update();
-  void draw() const;
+  void draw();
   void onKeyboardEvent(const SDL_KeyboardEvent &event);
   void onMouseMotionEvent(const SDL_MouseMotionEvent &event);
   void onMouseButtonEvent(const SDL_MouseButtonEvent &event);

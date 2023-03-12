@@ -41,10 +41,10 @@ void Game::update() {
   m_lastframetime = currentframetime;
 }
 
-void Game::draw() const {
-  Renderer::clear();
-  Renderer::updateView(m_camera);
-  Renderer::drawCube(glm::mat4(1.0f));
+void Game::draw() {
+  m_renderer.clear();
+  m_renderer.updateView(m_camera);
+  m_renderer.drawCube(glm::mat4(1.0f));
 }
 
 void Game::onKeyboardEvent(const SDL_KeyboardEvent &event) {
