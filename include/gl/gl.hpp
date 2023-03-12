@@ -1,6 +1,6 @@
 #pragma once
 
-#define USE_PREHISTORIC_GL
+#include "config.hpp"
 
 #ifdef USE_PREHISTORIC_GL
 #include "glbinding/gl32core/gl.h"

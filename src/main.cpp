@@ -1,26 +1,23 @@
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_error.h"
+#include "SDL2/SDL_events.h"
 #include "SDL2/SDL_mouse.h"
-#include "SDL_error.h"
-#include "SDL_events.h"
+#include "SDL2/SDL_video.h"
+#include "config.hpp"
 #include "game.hpp"
-#include "renderer.hpp"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_video.h>
+#include "glbinding/glbinding.h"
 #include <cassert>
-#include <glbinding/glbinding.h>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/geometric.hpp>
-#include <glm/gtx/rotate_vector.hpp>
 #include <iostream>
 
 int main(int, const char **) {
   assert(SDL_Init(SDL_INIT_EVERYTHING) == 0);
 
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_VERSION_MAJOR);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_VERSION_MINOR);
 
   auto window =
       SDL_CreateWindow("xd", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                       1080, 720, SDL_WINDOW_OPENGL);
+                       WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
   if (!window) {
     std::cerr << SDL_GetError() << std::endl;
     assert(window);

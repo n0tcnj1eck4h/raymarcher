@@ -1,9 +1,7 @@
 #pragma once
 #include "camera.hpp"
 #include "gl/buffer.hpp"
-#include "gl/gl.hpp"
 #include "gl/vao.hpp"
-
 
 class Renderer {
   GLuint program;
