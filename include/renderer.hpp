@@ -1,10 +1,11 @@
 #pragma once
 #include "camera.hpp"
 #include "gl/buffer.hpp"
+#include "gl/program.hpp"
 #include "gl/vao.hpp"
 
 class Renderer {
-  GLuint program;
+  GLProgram program;
   GLVertexArray vao;
   GLVertexArrayBuffer vbo;
   GLElementArrayBuffer ibo;
@@ -14,7 +15,6 @@ class Renderer {
 
 public:
   Renderer();
-  ~Renderer();
   void clear();
   void draw();
   void updateView(const Camera &);

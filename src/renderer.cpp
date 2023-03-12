@@ -29,60 +29,7 @@ extern "C" void messageCallback(GLenum, GLenum type, GLuint, GLenum, GLsizei,
 }
 #endif
 
-GLuint createShader(const char *source, GLenum type) {
-  GLuint shader = glCreateShader(type);
-  glShaderSource(shader, 1, &source, NULL);
-  glCompileShader(shader);
-
-#ifdef DEBUG
-  GLint len, success;
-  glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-  glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
-  if (!success) {
-    auto log = new char[len];
-    glGetShaderInfoLog(shader, len, NULL, log);
-    std::cout << log << std::endl;
-    delete[] log;
-  }
-#endif
-
-  return shader;
-}
-
-GLuint createProgram(GLuint vert_shader, GLuint frag_shader) {
-  GLuint program = glCreateProgram();
-  glAttachShader(program, vert_shader);
-  glAttachShader(program, frag_shader);
-  glLinkProgram(program);
-
-#ifdef DEBUG
-  GLint len, success;
-  glGetProgramiv(program, GL_LINK_STATUS, &success);
-  glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
-  if (!success) {
-    auto log = new char[len];
-    glGetProgramInfoLog(program, len, NULL, log);
-    std::cout << log << std::endl;
-    delete[] log;
-  }
-#endif
-
-  return program;
-}
-
-// GLuint createBuffer(GLsizeiptr size, const void *data) {
-//   GLuint buf;
-//   glGenBuffers(1, &buf);
-//   glNamedBufferStorage(buf, size, data, GL_CLIENT_STORAGE_BIT);
-//   return buf;
-// }
-//
-// GLuint createVertexArray(GLuint vbo, GLuint ibo) {
-//   GLuint vao;
-//   return vao;
-// }
-
-Renderer::Renderer() {
+Renderer::Renderer() : program(vertex_shader_source, fragment_shader_source) {
 #ifndef USE_PREHISTORIC_GL
   glDebugMessageCallback(messageCallback, nullptr);
   glEnable(GL_DEBUG_OUTPUT);
@@ -95,27 +42,20 @@ Renderer::Renderer() {
   glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
   glClearColor(0, 0, 1.0, 1.0);
 
-  GLuint vert_shader = createShader(vertex_shader_source, GL_VERTEX_SHADER);
-  GLuint frag_shader = createShader(fragment_shader_source, GL_FRAGMENT_SHADER);
-  program = createProgram(vert_shader, frag_shader);
-  glDeleteShader(vert_shader);
-  glDeleteShader(frag_shader);
-  glUseProgram(program);
+  program.use();
 
   ibo.data(solid_box_indices, sizeof(solid_box_indices));
   vbo.data(box_vertices, sizeof(box_vertices));
   vao.attachIBO(ibo);
   vao.attachAttrib(vbo, 0, 3, GL_FLOAT, 0, nullptr);
 
-  viewproj_uniform = glGetUniformLocation(program, "viewProj");
-  model_uniform = glGetUniformLocation(program, "model");
-  color_uniform = glGetUniformLocation(program, "color");
+  viewproj_uniform = glGetUniformLocation(program.m_id, "viewProj");
+  model_uniform = glGetUniformLocation(program.m_id, "model");
+  color_uniform = glGetUniformLocation(program.m_id, "color");
   // glProgramUniform3fv(program, color_uniform, 1,
   //                     glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
   glUniform3f(color_uniform, 1.0, 1.0, 1.0);
 }
-
-Renderer::~Renderer() { glDeleteProgram(program); }
 
 void Renderer::clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 
