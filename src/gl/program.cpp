@@ -1,4 +1,5 @@
 #include "gl/program.hpp"
+#include "gl/uniform.hpp"
 #include <glbinding/gl/types.h>
 #include <glbinding/gl46core/enum.h>
 #include <glbinding/gl46core/functions.h>
@@ -52,3 +53,7 @@ GLProgram::GLProgram(const char *vert_source, const char *frag_source) {
 GLProgram::~GLProgram() { glDeleteProgram(m_id); }
 
 void GLProgram::use() { glUseProgram(m_id); }
+
+GLUniform GLProgram::getUniform(const char *location) {
+  return GLUniform(*this, location);
+}

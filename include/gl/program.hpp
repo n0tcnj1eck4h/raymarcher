@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gl/gl.hpp"
+#include "gl/uniform.hpp"
 
 class GLProgram {
 
@@ -9,4 +10,5 @@ public:
   GLProgram(const char *vert, const char *frag);
   ~GLProgram();
   void use();
+  GLUniform getUniform(const char* location);
 };

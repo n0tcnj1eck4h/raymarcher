@@ -4,21 +4,23 @@
 #include "SDL_timer.h"
 #include "camera.hpp"
 #include "renderer.hpp"
+#include <glm/ext/scalar_constants.hpp>
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/transform.hpp>
 #include <iostream>
 
 Game::Game() : m_camera(0.01f, 100.0f, 16.0f / 9.0f, 80.0f) {
-  m_lastframetime = SDL_GetTicks64();
+  m_frametime = m_lastframetime = SDL_GetTicks64();
 }
 
 Game::~Game() {}
 
 void Game::update() {
-  u64 currentframetime = SDL_GetTicks64();
-  u64 deltatime = currentframetime - m_lastframetime;
+  m_frametime = SDL_GetTicks64();
+  u64 deltatime = m_frametime - m_lastframetime;
   float deltafloat = deltatime / 1000.0f;
 
   glm::vec3 camera_delta(0);
@@ -51,13 +53,17 @@ void Game::update() {
     m_keystates[i] = (Keystate)(m_keystates[i] & 0b01);
   }
 
-  m_lastframetime = currentframetime;
+  m_lastframetime = m_frametime;
 }
 
 void Game::draw() {
   m_renderer.clear();
   m_renderer.updateView(m_camera);
-  m_renderer.drawCube(glm::mat4(1.0f));
+  for(int i = 0; i < 100; i++) {
+    auto trans = glm::translate(glm::vec3(0, 2, 0));
+    auto rot = glm::rotate(2.f * glm::pi<float>() / 100.f * i, glm::vec3(0, 0, 1));
+    m_renderer.drawCube(rot * trans);
+  }
 }
 
 void Game::onKeyboardEvent(const SDL_KeyboardEvent &event) {

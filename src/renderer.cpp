@@ -29,7 +29,11 @@ extern "C" void messageCallback(GLenum, GLenum type, GLuint, GLenum, GLsizei,
 }
 #endif
 
-Renderer::Renderer() : program(vertex_shader_source, fragment_shader_source) {
+Renderer::Renderer()
+    : program(vertex_shader_source, fragment_shader_source),
+      viewproj_uniform(program.getUniform("viewProj")),
+      model_uniform(program.getUniform("model")),
+      color_uniform(program.getUniform("color")) {
 #ifndef USE_PREHISTORIC_GL
   glDebugMessageCallback(messageCallback, nullptr);
   glEnable(GL_DEBUG_OUTPUT);
@@ -49,12 +53,7 @@ Renderer::Renderer() : program(vertex_shader_source, fragment_shader_source) {
   vao.attachIBO(ibo);
   vao.attachAttrib(vbo, 0, 3, GL_FLOAT, 0, nullptr);
 
-  viewproj_uniform = glGetUniformLocation(program.m_id, "viewProj");
-  model_uniform = glGetUniformLocation(program.m_id, "model");
-  color_uniform = glGetUniformLocation(program.m_id, "color");
-  // glProgramUniform3fv(program, color_uniform, 1,
-  //                     glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
-  glUniform3f(color_uniform, 1.0, 1.0, 1.0);
+  color_uniform.vec3(glm::vec3(1.0, 1.0, 1.0));
 }
 
 void Renderer::clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
@@ -63,12 +62,12 @@ void Renderer::draw() {}
 
 void Renderer::updateView(const Camera &camera) {
   const auto &m = camera.getViewProj();
-  glUniformMatrix4fv(viewproj_uniform, 1, GL_FALSE, glm::value_ptr(m));
+  viewproj_uniform.matrix(m);
 }
 
 void Renderer::drawCube(const glm::mat4 &transform) {
   vao.bind();
-  glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(transform));
+  model_uniform.matrix(transform);
   glDrawElements(GL_TRIANGLES,
                  sizeof(solid_box_indices) / sizeof(*solid_box_indices),
                  GL_UNSIGNED_INT, 0);

@@ -3,7 +3,7 @@ BUILD_DIR := build
 SRC_DIR := src
 INCLUDE_DIR := include
 
-SOURCES := main.cpp renderer.cpp camera.cpp game.cpp gl/buffer.cpp gl/vao.cpp shaders.cpp gl/program.cpp
+SOURCES := main.cpp renderer.cpp camera.cpp game.cpp gl/buffer.cpp gl/vao.cpp shaders.cpp gl/program.cpp gl/uniform.cpp
 DEPFILES := $(SOURCES:%.cpp=$(BUILD_DIR)/%.d)
 
 CXX = g++

@@ -2,6 +2,7 @@
 #include "camera.hpp"
 #include "gl/buffer.hpp"
 #include "gl/program.hpp"
+#include "gl/uniform.hpp"
 #include "gl/vao.hpp"
 
 class Renderer {
@@ -9,9 +10,9 @@ class Renderer {
   GLVertexArray vao;
   GLVertexArrayBuffer vbo;
   GLElementArrayBuffer ibo;
-  GLuint viewproj_uniform;
-  GLuint model_uniform;
-  GLuint color_uniform;
+  GLUniform viewproj_uniform;
+  GLUniform model_uniform;
+  GLUniform color_uniform;
 
 public:
   Renderer();
