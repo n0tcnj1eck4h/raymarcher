@@ -13,14 +13,14 @@
 #include <iostream>
 
 Game::Game() : m_camera(0.01f, 100.0f, 16.0f / 9.0f, 80.0f) {
-  m_frametime = m_lastframetime = SDL_GetTicks64();
+  m_frameTime = m_lastFrameTime = SDL_GetTicks64();
 }
 
 Game::~Game() {}
 
 void Game::update() {
-  m_frametime = SDL_GetTicks64();
-  u64 deltatime = m_frametime - m_lastframetime;
+  m_frameTime = SDL_GetTicks64();
+  u64 deltatime = m_frameTime - m_lastFrameTime;
   float deltafloat = deltatime / 1000.0f;
 
   glm::vec3 camera_delta(0);
@@ -53,7 +53,7 @@ void Game::update() {
     m_keystates[i] = (Keystate)(m_keystates[i] & 0b01);
   }
 
-  m_lastframetime = m_frametime;
+  m_lastFrameTime = m_frameTime;
 }
 
 void Game::draw() {

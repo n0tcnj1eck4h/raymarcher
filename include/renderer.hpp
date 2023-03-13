@@ -6,13 +6,13 @@
 #include "gl/vao.hpp"
 
 class Renderer {
-  GLProgram program;
-  GLVertexArray vao;
-  GLVertexArrayBuffer vbo;
-  GLElementArrayBuffer ibo;
-  GLUniform viewproj_uniform;
-  GLUniform model_uniform;
-  GLUniform color_uniform;
+  GLProgram m_program;
+  GLVertexArray m_vao;
+  GLVertexArrayBuffer m_vbo;
+  GLElementArrayBuffer m_ibo;
+  GLUniform m_viewprojUniform;
+  GLUniform m_modelUniform;
+  GLUniform m_colorUniform;
 
 public:
   Renderer();

@@ -17,7 +17,7 @@ class Game {
   Renderer m_renderer;
   Camera m_camera;
   Keystate m_keystates[SDL_NUM_SCANCODES] = {Keystate::RELEASED};
-  u64 m_lastframetime, m_frametime;
+  u64 m_lastFrameTime, m_frameTime;
 
 public:
   Game();
