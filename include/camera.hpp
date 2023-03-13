@@ -4,12 +4,14 @@
 
 class Camera {
   float nearZ, farZ, aspect, fov;
-  glm::mat4 view, proj, viewproj;
+  glm::vec3 pos, dir;
 
 public:
-  Camera();
-  glm::vec3 pos, dir;
-  void updateProj();
-  void updateViewProj();
-  const glm::mat4 &getViewProj() const;
+  Camera(float nearZ, float farZ, float aspect_ratio, float fov);
+  void moveLocal(const glm::vec3 &delta);
+  void moveGlobal(const glm::vec3 &delta);
+  void rotateY(float angle);
+  void rotateX(float angle);
+
+  glm::mat4 getViewProj() const;
 };

@@ -2,6 +2,7 @@
 #include "SDL_events.h"
 #include "SDL_scancode.h"
 #include "SDL_timer.h"
+#include "camera.hpp"
 #include "renderer.hpp"
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
@@ -9,7 +10,9 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <iostream>
 
-Game::Game() { m_lastframetime = SDL_GetTicks64(); }
+Game::Game() : m_camera(0.01f, 100.0f, 16.0f / 9.0f, 80.0f) {
+  m_lastframetime = SDL_GetTicks64();
+}
 
 Game::~Game() {}
 
@@ -18,22 +21,32 @@ void Game::update() {
   u64 deltatime = currentframetime - m_lastframetime;
   float deltafloat = deltatime / 1000.0f;
 
-  auto camera_right = glm::cross(glm::vec3(0, -1, 0), m_camera.dir);
-  camera_right = glm::normalize(camera_right);
+  glm::vec3 camera_delta(0);
+
   if (m_keystates[SDL_SCANCODE_W] & Keystate::PRESSED) {
-    m_camera.pos += deltafloat * m_camera.dir;
+    camera_delta += deltafloat * glm::vec3(0, 0, 1);
   }
   if (m_keystates[SDL_SCANCODE_S] & Keystate::PRESSED) {
-    m_camera.pos -= deltafloat * m_camera.dir;
+    camera_delta -= deltafloat * glm::vec3(0, 0, 1);
   }
   if (m_keystates[SDL_SCANCODE_A] & Keystate::PRESSED) {
-    m_camera.pos -= deltafloat * camera_right;
+    camera_delta -= deltafloat * glm::vec3(1, 0, 0);
   }
   if (m_keystates[SDL_SCANCODE_D] & Keystate::PRESSED) {
-    m_camera.pos += deltafloat * camera_right;
+    camera_delta += deltafloat * glm::vec3(1, 0, 0);
+  }
+  if (m_keystates[SDL_SCANCODE_SPACE] & Keystate::PRESSED) {
+    camera_delta -= deltafloat * glm::vec3(0, -1, 0);
+  }
+  if (m_keystates[SDL_SCANCODE_LCTRL] & Keystate::PRESSED) {
+    camera_delta += deltafloat * glm::vec3(0, -1, 0);
+  }
+  if (m_keystates[SDL_SCANCODE_LSHIFT] & Keystate::PRESSED) {
+    camera_delta *= 2.f;
   }
 
-  m_camera.updateViewProj();
+  m_camera.moveLocal(camera_delta);
+
   for (u32 i = 0; i < SDL_NUM_SCANCODES; i++) {
     m_keystates[i] = (Keystate)(m_keystates[i] & 0b01);
   }
@@ -60,10 +73,8 @@ void Game::onKeyboardEvent(const SDL_KeyboardEvent &event) {
 }
 
 void Game::onMouseMotionEvent(const SDL_MouseMotionEvent &event) {
-  m_camera.dir = glm::rotateX(m_camera.dir, -(float)event.xrel / 1000.0f);
-  m_camera.dir = glm::rotate(
-      m_camera.dir, (float)event.yrel / 1000.0f,
-      glm::normalize(glm::cross(m_camera.dir, glm::vec3(0, -1, 0))));
+  m_camera.rotateY(-event.xrel / 1000.0);
+  m_camera.rotateX(event.yrel / 1000.0);
 }
 
 void Game::onMouseButtonEvent(const SDL_MouseButtonEvent &event) {}
