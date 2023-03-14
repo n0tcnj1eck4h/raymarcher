@@ -1,10 +1,10 @@
-#include "renderer.hpp"
-#include "camera.hpp"
+#include "graphics/renderer.hpp"
 #include "config.hpp"
 #include "glm/fwd.hpp"
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "shaders.hpp"
+#include "graphics/camera.hpp"
+#include "graphics/shaders.hpp"
 #include <iostream>
 
 static const glm::vec3 box_vertices[] = {

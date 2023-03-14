@@ -3,13 +3,13 @@ BUILD_DIR := build
 SRC_DIR := src
 INCLUDE_DIR := include
 
-SOURCES := main.cpp renderer.cpp camera.cpp game.cpp gl/buffer.cpp gl/vao.cpp shaders.cpp gl/program.cpp gl/uniform.cpp
+SOURCES := $(shell find src/ -name *.cpp | cut -c 5-)
 DEPFILES := $(SOURCES:%.cpp=$(BUILD_DIR)/%.d)
 
 CXX = g++
-CXXFLAGS = -Wall -Wextra -pedantic -Iinclude -std=c++17 -DDEBUG `pkg-config --cflags sdl2` 
+CXXFLAGS = -Wall -Wextra -pedantic -Iinclude -std=c++17 -DDEBUG -D_REENTRANT
 LDFLAGS = 
-LDLIBS = `pkg-config --libs sdl2` -lglbinding
+LDLIBS = -lSDL2 -lglbinding
 
 .PHONY: clean build run
 
@@ -20,6 +20,8 @@ clean:
 	$(RM) $(BUILD_DIR)/*.d
 	$(RM) $(BUILD_DIR)/gl/*.o
 	$(RM) $(BUILD_DIR)/gl/*.d
+	$(RM) $(BUILD_DIR)/graphics/*.o
+	$(RM) $(BUILD_DIR)/graphics/*.d
 	$(RM) $(BUILD_DIR)/$(BINARY)
 
 run: build

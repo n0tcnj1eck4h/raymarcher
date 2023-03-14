@@ -1,5 +1,5 @@
 #pragma once
-#include "camera.hpp"
+#include "graphics/camera.hpp"
 #include "gl/buffer.hpp"
 #include "gl/program.hpp"
 #include "gl/uniform.hpp"

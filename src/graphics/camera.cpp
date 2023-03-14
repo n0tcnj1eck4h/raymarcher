@@ -1,4 +1,4 @@
-#include "camera.hpp"
+#include "graphics/camera.hpp"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>

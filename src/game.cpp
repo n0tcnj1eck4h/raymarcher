@@ -1,9 +1,8 @@
 #include "game.hpp"
-#include "SDL_events.h"
-#include "SDL_scancode.h"
-#include "SDL_timer.h"
-#include "camera.hpp"
-#include "renderer.hpp"
+#include "SDL2/SDL_scancode.h"
+#include "SDL2/SDL_timer.h"
+#include "graphics/camera.hpp"
+#include "graphics/renderer.hpp"
 #include <glm/ext/scalar_constants.hpp>
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
@@ -59,11 +58,7 @@ void Game::update() {
 void Game::draw() {
   m_renderer.clear();
   m_renderer.updateView(m_camera);
-  for(int i = 0; i < 100; i++) {
-    auto trans = glm::translate(glm::vec3(0, 2, 0));
-    auto rot = glm::rotate(2.f * glm::pi<float>() / 100.f * i, glm::vec3(0, 0, 1));
-    m_renderer.drawCube(rot * trans);
-  }
+  m_renderer.drawCube(glm::mat4(1));
 }
 
 void Game::onKeyboardEvent(const SDL_KeyboardEvent &event) {

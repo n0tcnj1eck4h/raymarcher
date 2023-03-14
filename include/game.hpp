@@ -1,9 +1,9 @@
 #pragma once
 
-#include "SDL_events.h"
-#include "SDL_scancode.h"
-#include "camera.hpp"
-#include "renderer.hpp"
+#include "SDL2/SDL_events.h"
+#include "SDL2/SDL_scancode.h"
+#include "graphics/camera.hpp"
+#include "graphics/renderer.hpp"
 #include "types.hpp"
 
 enum Keystate : u8 {
