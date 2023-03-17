@@ -1,11 +1,11 @@
 #pragma once
 #include "gl/gl.hpp"
-#include "gl/object.hpp"
 #include "types.hpp"
 
-class GLBuffer : public GLObject {
+class GLBuffer {
 protected:
   GLenum m_target;
+  GLuint m_id;
 
   GLBuffer(GLenum target);
   GLBuffer(const GLBuffer &) = delete;
@@ -13,8 +13,8 @@ protected:
   ~GLBuffer();
 
 public:
-  void bind() const final;
-  void unbind() const final;
+  void bind() const;
+  void unbind() const;
   void data(const void *data, GLsizeiptr size);
 };
 
