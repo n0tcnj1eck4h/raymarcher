@@ -31,9 +31,12 @@ const char *fragment_shader_source = GLSL_VERSION_HEADER
 const char *vertex_shader_source2 = GLSL_VERSION_HEADER
     R"glsl(
     layout(location = 0) in vec2 aPos;
+
+    out vec2 screenPos;
     
     void main() {
-      gl_Position = vec4(aPos, 0.0, 1.0);
+        screenPos = aPos.xy;
+        gl_Position = vec4(aPos, 0.0, 1.0);
     }
 )glsl";
 
@@ -46,8 +49,51 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
     };
 
     out vec4 FragColor;
-    
+    in vec2 screenPos;
+
+    const float EPSILON = 0.005;
+    const float focal_length = 2.5;
+    const vec3 eye = vec3(0.0, 0.0, -focal_length - 1);
+
+    float sphereSDF(vec3 pos) {
+        return length(pos) - 1.0;
+    }
+
+    float sceneSDF(vec3 pos) {
+        return sphereSDF(pos);
+    }
+
+    vec3 estimateNormal(vec3 p) {
+        return normalize(vec3(
+            sceneSDF(vec3(p.x + EPSILON, p.y, p.z)) - sceneSDF(vec3(p.x - EPSILON, p.y, p.z)),
+            sceneSDF(vec3(p.x, p.y + EPSILON, p.z)) - sceneSDF(vec3(p.x, p.y - EPSILON, p.z)),
+            sceneSDF(vec3(p.x, p.y, p.z  + EPSILON)) - sceneSDF(vec3(p.x, p.y, p.z - EPSILON))
+        ));
+    }
+
+    vec3 castRay(vec3 eye, vec3 rd) {
+        float depth = 0.0;
+        for(int i = 0; i < 100; i++) {
+            float dist = sceneSDF(eye + rd * depth);
+
+            if(dist < EPSILON) {
+                return estimateNormal(eye + rd * depth);
+            }
+
+            depth += dist;
+            if(depth > 100.0) {
+                return vec3(0.0, 0.0, 0.0);
+            }
+        }
+
+        return vec3(0.0, 0.0, 0.0);
+    }
+
     void main() {
-      FragColor = vec4(r, g, b, 1.0);
+
+        vec3 rd = normalize(vec3(screenPos.xy, focal_length));
+
+        FragColor = vec4((vec3(1.0,1.0,1.0) + castRay(eye, rd)) / 2.0, 1.0);
+        // FragColor = vec4(rd, 1.0);
     }
 )glsl";

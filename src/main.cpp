@@ -31,7 +31,7 @@ int main(int, const char **) {
 
   glbinding::initialize(nullptr);
 
-  SDL_SetRelativeMouseMode(SDL_TRUE);
+  // SDL_SetRelativeMouseMode(SDL_TRUE);
   SDL_ShowWindow(window);
 
   {
