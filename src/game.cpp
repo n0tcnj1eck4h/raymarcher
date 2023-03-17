@@ -57,8 +57,9 @@ void Game::update() {
 
 void Game::draw() {
   m_renderer.clear();
-  m_renderer.updateView(m_camera);
-  m_renderer.drawCube(glm::mat4(1));
+  // m_renderer.updateView(m_camera);
+  // m_renderer.drawCube(glm::mat4(1));
+  m_renderer.drawScreen();
 }
 
 void Game::onKeyboardEvent(const SDL_KeyboardEvent &event) {

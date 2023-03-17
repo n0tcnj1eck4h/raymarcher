@@ -18,3 +18,8 @@ void GLBuffer::data(const void *data, GLsizeiptr size) {
   bind();
   glBufferData(m_target, size, data, GL_STATIC_READ);
 }
+
+void GLShaderStorageBuffer::bindBase(GLuint binding_location) {
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, binding_location, m_id);
+}
+
