@@ -52,11 +52,15 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
     in vec2 screenPos;
 
     const float EPSILON = 0.005;
-    const float focal_length = 2.5;
-    const vec3 eye = vec3(0.0, 0.0, -focal_length - 1);
+    const float focal_length = 1.0;
 
     float sphereSDF(vec3 pos) {
         return length(pos) - 1.0;
+    }
+
+    float boxSDF(vec3 p, vec3 b) {
+      vec3 q = abs(p) - b;
+      return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
     }
 
     float sceneSDF(vec3 pos) {
@@ -72,16 +76,17 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
     }
 
     vec3 castRay(vec3 eye, vec3 rd) {
-        float depth = 0.0;
+        vec3 ray = eye;
         for(int i = 0; i < 100; i++) {
-            float dist = sceneSDF(eye + rd * depth);
+            float dist = sceneSDF(ray);
 
             if(dist < EPSILON) {
-                return estimateNormal(eye + rd * depth);
+                return estimateNormal(ray);
             }
 
-            depth += dist;
-            if(depth > 100.0) {
+            ray += dist * rd;
+
+            if(length(ray) > 100.0) {
                 return vec3(0.0, 0.0, 0.0);
             }
         }
@@ -90,8 +95,14 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
     }
 
     void main() {
+        const vec3 eye = vec3(2.0, 2.0, -2.0);
+        const vec3 dir = normalize(vec3(-2.0, -2.0, 2.0));
+        const vec3 up = vec3(0, 1, 0);
 
-        vec3 rd = normalize(vec3(screenPos.xy, focal_length));
+        const vec3 right = normalize(cross(dir, up));
+        const vec3 up_local = normalize(cross(right, dir));
+
+        vec3 rd = normalize(screenPos.x * right + screenPos.y * up_local + focal_length * dir);
 
         FragColor = vec4((vec3(1.0,1.0,1.0) + castRay(eye, rd)) / 2.0, 1.0);
         // FragColor = vec4(rd, 1.0);
