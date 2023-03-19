@@ -22,10 +22,13 @@ class Renderer {
   GLUniform m_modelUniform;
   GLUniform m_colorUniform;
 
+
 public:
   Renderer();
   void clear();
   void drawScreen();
   void updateView(const Camera &);
   void drawCube(const glm::mat4 &transform);
+  GLUniform m_rayDirection;
+  GLUniform m_eyePosition;
 };

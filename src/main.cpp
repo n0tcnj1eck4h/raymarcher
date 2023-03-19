@@ -29,6 +29,8 @@ int main(int, const char **) {
     assert(gl_context);
   }
 
+  // SDL_GL_SetSwapInterval(0);
+
   glbinding::initialize(nullptr);
 
   // SDL_SetRelativeMouseMode(SDL_TRUE);

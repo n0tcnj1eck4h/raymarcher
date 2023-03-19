@@ -23,6 +23,15 @@ void Game::update() {
   float deltafloat = deltatime / 1000.0f;
 
   glm::vec3 camera_delta(0);
+  glm::vec3 eyepos(10, 10, 10);
+
+  eyepos = glm::rotate(eyepos, (float)(m_frameTime) / 1000.0f / 3.14f, glm::vec3(0,1,0));
+  glm::vec3 dir = -glm::normalize(eyepos);
+
+  std::cout << 1.0f / (deltatime / 1000.0f) << std::endl;
+
+  m_renderer.m_eyePosition.vec3(eyepos);
+  m_renderer.m_rayDirection.vec3(dir);
 
   if (m_keystates[SDL_SCANCODE_W] & Keystate::PRESSED) {
     camera_delta += deltafloat * glm::vec3(0, 0, 1);

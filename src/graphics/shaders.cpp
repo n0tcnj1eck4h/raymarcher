@@ -50,9 +50,11 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
 
     out vec4 FragColor;
     in vec2 screenPos;
+    uniform vec3 dir;
+    uniform vec3 eye;
 
     const float EPSILON = 0.005;
-    const float focal_length = 1.0;
+    const float focal_length = 0.5;
 
     float sphereSDF(vec3 pos) {
         return length(pos) - 1.0;
@@ -86,6 +88,8 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
 
             ray += dist * rd;
 
+            ray = mod(((ray + vec3(1,1,1)) / 2), 1) * 2 - vec3(1,1,1);
+
             if(length(ray) > 100.0) {
                 return vec3(0.0, 0.0, 0.0);
             }
@@ -95,8 +99,6 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
     }
 
     void main() {
-        const vec3 eye = vec3(2.0, 2.0, -2.0);
-        const vec3 dir = normalize(vec3(-2.0, -2.0, 2.0));
         const vec3 up = vec3(0, 1, 0);
 
         const vec3 right = normalize(cross(dir, up));

@@ -3,6 +3,7 @@
 #include "glm/fwd.hpp"
 #include "graphics/camera.hpp"
 #include "graphics/shaders.hpp"
+#include <glm/geometric.hpp>
 #include <iostream>
 
 static const glm::vec3 box_vertices[] = {
@@ -43,7 +44,10 @@ Renderer::Renderer()
       m_program2(vertex_shader_source2, fragment_shader_source2),
       m_viewprojUniform(m_program.getUniform("viewProj")),
       m_modelUniform(m_program.getUniform("model")),
-      m_colorUniform(m_program.getUniform("color")) {
+      m_colorUniform(m_program.getUniform("color")),
+      m_rayDirection(m_program2.getUniform("dir")),
+      m_eyePosition(m_program2.getUniform("eye"))
+{
 
 #ifndef USE_PREHISTORIC_GL
   glDebugMessageCallback(messageCallback, nullptr);
@@ -74,6 +78,9 @@ Renderer::Renderer()
 
   m_program.use();
   m_colorUniform.vec3(glm::vec3(1.0, 1.0, 1.0));
+
+  m_program2.use();
+  m_rayDirection.vec3(glm::normalize(glm::vec3(0, 10, 3)));
 }
 
 void Renderer::clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
