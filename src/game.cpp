@@ -23,7 +23,7 @@ void Game::update() {
   float deltafloat = deltatime / 1000.0f;
 
   glm::vec3 camera_delta(0);
-  glm::vec3 eyepos(10, 10, 10);
+  glm::vec3 eyepos(5, 5, 5);
 
   eyepos = glm::rotate(eyepos, (float)(m_frameTime) / 1000.0f / 3.14f, glm::vec3(0,1,0));
   glm::vec3 dir = -glm::normalize(eyepos);

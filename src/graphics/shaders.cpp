@@ -32,10 +32,17 @@ const char *vertex_shader_source2 = GLSL_VERSION_HEADER
     R"glsl(
     layout(location = 0) in vec2 aPos;
 
-    out vec2 screenPos;
+    out vec3 rayDirection;
+    uniform vec3 dir;
     
+    const float focal_length = 2.0;
+    const vec3 up = vec3(0, 1, 0);
+
     void main() {
-        screenPos = aPos.xy;
+        const vec3 right = normalize(cross(dir, up));
+        const vec3 up_local = normalize(cross(right, dir));
+
+        rayDirection = normalize(aPos.x * right + aPos.y * up_local + focal_length * dir);
         gl_Position = vec4(aPos, 0.0, 1.0);
     }
 )glsl";
@@ -49,12 +56,10 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
     };
 
     out vec4 FragColor;
-    in vec2 screenPos;
-    uniform vec3 dir;
+    in vec3 rayDirection;
     uniform vec3 eye;
 
-    const float EPSILON = 0.005;
-    const float focal_length = 0.5;
+    const float EPSILON = 0.0005;
 
     float sphereSDF(vec3 pos) {
         return length(pos) - 1.0;
@@ -66,7 +71,7 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
     }
 
     float sceneSDF(vec3 pos) {
-        return sphereSDF(pos);
+        return boxSDF(pos, vec3(0.2,0.2,0.2));
     }
 
     vec3 estimateNormal(vec3 p) {
@@ -79,15 +84,19 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
 
     vec3 castRay(vec3 eye, vec3 rd) {
         vec3 ray = eye;
-        for(int i = 0; i < 100; i++) {
+        float shortestDist = 128.0f;
+        ray = mod(((ray + vec3(1,1,1)) / 2), 1) * 2 - vec3(1,1,1);
+
+        for(int i = 0; i < 256; i++) {
             float dist = sceneSDF(ray);
+            shortestDist = min(shortestDist, dist);
 
             if(dist < EPSILON) {
-                return estimateNormal(ray);
+                // return estimateNormal(ray);
+                return vec3(i,i,i) / 100;
             }
 
             ray += dist * rd;
-
             ray = mod(((ray + vec3(1,1,1)) / 2), 1) * 2 - vec3(1,1,1);
 
             if(length(ray) > 100.0) {
@@ -99,14 +108,8 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
     }
 
     void main() {
-        const vec3 up = vec3(0, 1, 0);
-
-        const vec3 right = normalize(cross(dir, up));
-        const vec3 up_local = normalize(cross(right, dir));
-
-        vec3 rd = normalize(screenPos.x * right + screenPos.y * up_local + focal_length * dir);
-
-        FragColor = vec4((vec3(1.0,1.0,1.0) + castRay(eye, rd)) / 2.0, 1.0);
-        // FragColor = vec4(rd, 1.0);
+        vec3 rd = normalize(rayDirection);
+        // FragColor = vec4((vec3(1.0,1.0,1.0) + castRay(eye, rd)) / 2.0, 1.0);
+        FragColor = vec4(castRay(eye, rd), 1.0);
     }
 )glsl";
