@@ -1,16 +1,19 @@
 #pragma once
 
-#include "gl/gl.hpp"
 #include "gl/uniform.hpp"
 
 class GLProgram {
+  GLuint m_id;
+
+protected:
+  GLUniform getUniform(const char *location);
 
 public:
-  GLuint m_id;
   GLProgram(const char *vert, const char *frag);
-  GLProgram(const GLProgram&) = delete;
-  GLProgram(GLProgram&&) = delete;
+  GLProgram(const GLProgram &) = delete;
+  GLProgram(GLProgram &&) = delete;
   ~GLProgram();
   void use();
-  GLUniform getUniform(const char* location);
+
+  friend class GLUniform;
 };

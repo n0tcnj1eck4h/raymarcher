@@ -30,8 +30,8 @@ void Game::update() {
 
   std::cout << 1.0f / (deltatime / 1000.0f) << std::endl;
 
-  m_renderer.m_eyePosition.vec3(eyepos);
-  m_renderer.m_rayDirection.vec3(dir);
+  m_renderer.m_raymarcher.setCameraPosition(eyepos);
+  m_renderer.m_raymarcher.setCameraDirection(dir);
 
   if (m_keystates[SDL_SCANCODE_W] & Keystate::PRESSED) {
     camera_delta += deltafloat * glm::vec3(0, 0, 1);

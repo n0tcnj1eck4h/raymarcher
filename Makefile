@@ -22,6 +22,8 @@ clean:
 	$(RM) $(BUILD_DIR)/gl/*.d
 	$(RM) $(BUILD_DIR)/graphics/*.o
 	$(RM) $(BUILD_DIR)/graphics/*.d
+	$(RM) $(BUILD_DIR)/graphics/shaders/*.o
+	$(RM) $(BUILD_DIR)/graphics/shaders/*.d
 	$(RM) $(BUILD_DIR)/$(BINARY)
 
 run: build

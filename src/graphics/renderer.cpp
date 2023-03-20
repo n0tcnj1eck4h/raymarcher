@@ -40,13 +40,6 @@ extern "C" void messageCallback(GLenum, GLenum type, GLuint, GLenum, GLsizei,
 #endif
 
 Renderer::Renderer()
-    : m_program(vertex_shader_source, fragment_shader_source),
-      m_program2(vertex_shader_source2, fragment_shader_source2),
-      m_viewprojUniform(m_program.getUniform("viewProj")),
-      m_modelUniform(m_program.getUniform("model")),
-      m_colorUniform(m_program.getUniform("color")),
-      m_rayDirection(m_program2.getUniform("dir")),
-      m_eyePosition(m_program2.getUniform("eye"))
 {
 
 #ifndef USE_PREHISTORIC_GL
@@ -76,17 +69,14 @@ Renderer::Renderer()
   m_vao2.attachIBO(m_ibo2);
   m_vao2.unbind();
 
-  m_program.use();
-  m_colorUniform.vec3(glm::vec3(1.0, 1.0, 1.0));
-
-  m_program2.use();
-  m_rayDirection.vec3(glm::normalize(glm::vec3(0, 10, 3)));
+  m_rasterizer.setDrawColor(glm::vec3(1, 0, 0));
+  m_raymarcher.setCameraDirection(glm::normalize(glm::vec3(0, 10, 3)));
 }
 
 void Renderer::clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 
 void Renderer::drawScreen() {
-  m_program2.use();
+  m_raymarcher.use();
   m_vao2.bind();
   m_ssbo.bind();
   glDrawElements(GL_TRIANGLES, sizeof(screen_indices) / sizeof(*screen_indices),
@@ -95,13 +85,13 @@ void Renderer::drawScreen() {
 
 void Renderer::updateView(const Camera &camera) {
   const auto &m = camera.getViewProj();
-  m_viewprojUniform.matrix(m);
+  m_rasterizer.setViewProjMatrix(m);
 }
 
 void Renderer::drawCube(const glm::mat4 &transform) {
-  m_program.use();
+  m_rasterizer.use();
   m_vao.bind();
-  m_modelUniform.matrix(transform);
+  m_rasterizer.setModelMatrix(transform);
   glDrawElements(GL_TRIANGLES,
                  sizeof(solid_box_indices) / sizeof(*solid_box_indices),
                  GL_UNSIGNED_INT, 0);
