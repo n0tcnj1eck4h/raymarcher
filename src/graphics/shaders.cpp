@@ -71,7 +71,8 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
     }
 
     float sceneSDF(vec3 pos) {
-        return boxSDF(pos, vec3(0.2,0.2,0.2));
+        return min(min(boxSDF(pos, vec3(0.1, 0.1, 2)), boxSDF(pos, vec3(2, 0.1, 0.1))), boxSDF(pos, vec3(0.1, 2, 0.1)));
+        // return max(sphereSDF(pos), -boxSDF(pos, vec3(0.5, 2.0, 0.5)));
     }
 
     vec3 estimateNormal(vec3 p) {
@@ -85,19 +86,18 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
     vec3 castRay(vec3 eye, vec3 rd) {
         vec3 ray = eye;
         float shortestDist = 128.0f;
-        ray = mod(((ray + vec3(1,1,1)) / 2), 1) * 2 - vec3(1,1,1);
+        ray = mod(ray + vec3(2), 4) - vec3(2);
 
         for(int i = 0; i < 256; i++) {
             float dist = sceneSDF(ray);
             shortestDist = min(shortestDist, dist);
 
             if(dist < EPSILON) {
-                // return estimateNormal(ray);
-                return vec3(i,i,i) / 100;
+                return (vec3(1) + estimateNormal(ray) * vec3(100-i) / 100) / 2.0;
             }
 
             ray += dist * rd;
-            ray = mod(((ray + vec3(1,1,1)) / 2), 1) * 2 - vec3(1,1,1);
+            ray = mod(ray + vec3(2), 4) - vec3(2);
 
             if(length(ray) > 100.0) {
                 return vec3(0.0, 0.0, 0.0);
@@ -109,7 +109,6 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
 
     void main() {
         vec3 rd = normalize(rayDirection);
-        // FragColor = vec4((vec3(1.0,1.0,1.0) + castRay(eye, rd)) / 2.0, 1.0);
         FragColor = vec4(castRay(eye, rd), 1.0);
     }
 )glsl";

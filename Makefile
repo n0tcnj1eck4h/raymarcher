@@ -6,7 +6,6 @@ INCLUDE_DIR := include
 SOURCES := $(shell find src/ -name *.cpp | cut -c 5-)
 DEPFILES := $(SOURCES:%.cpp=$(BUILD_DIR)/%.d)
 
-CXX = g++
 CXXFLAGS = -Wall -Wextra -pedantic -Iinclude -std=c++17 -DDEBUG -D_REENTRANT
 LDFLAGS = 
 LDLIBS = -lSDL2 -lglbinding

@@ -17,21 +17,19 @@ Game::Game() : m_camera(0.01f, 100.0f, 16.0f / 9.0f, 80.0f) {
 
 Game::~Game() {}
 
+static glm::vec3 eyepos(5, 5, 5);
+static glm::vec3 dir = -glm::normalize(eyepos);
+
 void Game::update() {
   m_frameTime = SDL_GetTicks64();
   u64 deltatime = m_frameTime - m_lastFrameTime;
   float deltafloat = deltatime / 1000.0f;
 
+  // eyepos = glm::rotate(eyepos, (float)(m_frameTime) / 100.0f / 3.14f, glm::normalize(glm::vec3(1,1,0)));
+
   glm::vec3 camera_delta(0);
-  glm::vec3 eyepos(5, 5, 5);
-
-  eyepos = glm::rotate(eyepos, (float)(m_frameTime) / 1000.0f / 3.14f, glm::vec3(0,1,0));
-  glm::vec3 dir = -glm::normalize(eyepos);
-
   std::cout << 1.0f / (deltatime / 1000.0f) << std::endl;
 
-  m_renderer.m_raymarcher.setCameraPosition(eyepos);
-  m_renderer.m_raymarcher.setCameraDirection(dir);
 
   if (m_keystates[SDL_SCANCODE_W] & Keystate::PRESSED) {
     camera_delta += deltafloat * glm::vec3(0, 0, 1);
@@ -52,9 +50,17 @@ void Game::update() {
     camera_delta += deltafloat * glm::vec3(0, -1, 0);
   }
   if (m_keystates[SDL_SCANCODE_LSHIFT] & Keystate::PRESSED) {
-    camera_delta *= 2.f;
+    camera_delta *= 8.f;
   }
 
+
+  glm::vec3 right = glm::cross(dir, glm::vec3(0, 1, 0));
+  right = glm::normalize(right);
+  eyepos += right * camera_delta.x;
+  eyepos += dir * camera_delta.z;
+  eyepos.y += camera_delta.y;
+
+  m_renderer.m_raymarcher.setCameraPosition(eyepos);
   m_camera.moveLocal(camera_delta);
 
   for (u32 i = 0; i < SDL_NUM_SCANCODES; i++) {
@@ -86,6 +92,13 @@ void Game::onKeyboardEvent(const SDL_KeyboardEvent &event) {
 void Game::onMouseMotionEvent(const SDL_MouseMotionEvent &event) {
   m_camera.rotateY(-event.xrel / 1000.0);
   m_camera.rotateX(event.yrel / 1000.0);
+
+  dir = glm::rotateY(dir, -event.xrel / 1000.0f);
+  glm::vec3 right = glm::cross(dir, glm::vec3(0, -1, 0));
+  right = glm::normalize(right);
+  dir = glm::rotate(dir, event.yrel / 1000.0f, right);
+
+  m_renderer.m_raymarcher.setCameraDirection(dir);
 }
 
 void Game::onMouseButtonEvent(const SDL_MouseButtonEvent &event) {}
