@@ -2,7 +2,8 @@
 #include "config.hpp"
 #include "glm/fwd.hpp"
 #include "graphics/camera.hpp"
-#include "graphics/shaders.hpp"
+#include <glbinding/gl/enum.h>
+#include <glbinding/gl/functions.h>
 #include <glm/geometric.hpp>
 #include <iostream>
 

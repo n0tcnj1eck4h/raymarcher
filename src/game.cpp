@@ -45,10 +45,10 @@ void Game::update() {
     camera_delta += deltafloat * glm::vec3(1, 0, 0);
   }
   if (m_keystates[SDL_SCANCODE_SPACE] & Keystate::PRESSED) {
-    camera_delta -= deltafloat * glm::vec3(0, -1, 0);
+    camera_delta += deltafloat * glm::vec3(0, 1, 0);
   }
   if (m_keystates[SDL_SCANCODE_LCTRL] & Keystate::PRESSED) {
-    camera_delta += deltafloat * glm::vec3(0, -1, 0);
+    camera_delta -= deltafloat * glm::vec3(0, 1, 0);
   }
   if (m_keystates[SDL_SCANCODE_LSHIFT] & Keystate::PRESSED) {
     camera_delta *= 8.f;
