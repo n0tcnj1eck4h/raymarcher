@@ -32,11 +32,45 @@ static const char *frag_source = GLSL_VERSION_HEADER
     out vec4 FragColor;
     in vec3 rayDirection;
     uniform vec3 eye;
-    vec3 ray = eye;
+    vec3 ray = vec3(0);
+
+    vec3 castRay(vec3 rd) {
+        float Sx = sqrt(1 + pow(rd.y / rd.x, 2) + pow(rd.z / rd.x, 2));
+        float Sy = sqrt(1 + pow(rd.x / rd.y, 2) + pow(rd.z / rd.y, 2));
+        float Sz = sqrt(1 + pow(rd.y / rd.z, 2) + pow(rd.x / rd.z, 2));
+        vec3 color = vec3(1);
+
+        ivec3 step = ivec3(sign(rd));
+        ivec3 ipos = ivec3(0);
+
+        for(int i = 0; i < 16; i++) {
+            vec3 rayabs = mod(abs(ray), 1);
+            float dist_x = Sx * (1.0 - rayabs.x);
+            float dist_y = Sy * (1.0 - rayabs.y);
+            float dist_z = Sz * (1.0 - rayabs.z);
+
+            if(dist_x < dist_y && dist_x < dist_z) {
+                ipos += step * ivec3(1, 0, 0);
+                ray += dist_x * rd + 0.0001 * step;
+            }
+            else if(dist_y < dist_x && dist_y < dist_z) {
+                ipos += step * ivec3(0, 1, 0);
+                ray += dist_y * rd + 0.0001 * step;
+            }
+            else if(dist_z < dist_y && dist_z < dist_x) {
+                ipos += step * ivec3(1, 0, 1);
+                ray += dist_z * rd + 0.0001 * step;
+            }
+
+
+        }
+
+        return vec3(abs(ipos)) / length(ray);
+    }
 
     void main() {
         vec3 rd = normalize(rayDirection);
-        FragColor = vec4(r, g, b, 1.0);
+        FragColor = vec4(castRay(rd), 1.0);
     }
 )glsl";
 
