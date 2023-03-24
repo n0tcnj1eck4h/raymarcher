@@ -1,4 +1,4 @@
-BINARY := rhythm_game
+BINARY := cotmve
 BUILD_DIR := build
 SRC_DIR := src
 INCLUDE_DIR := include
