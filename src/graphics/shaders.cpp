@@ -35,14 +35,15 @@ const char *vertex_shader_source2 = GLSL_VERSION_HEADER
     out vec3 rayDirection;
     uniform vec3 dir;
     
-    const float focal_length = 2.0;
+    const float focal_length = 1.5;
+    const float aspect_ratio = 16.0 / 9.0;
     const vec3 up = vec3(0, 1, 0);
 
     void main() {
         const vec3 right = normalize(cross(dir, up));
         const vec3 up_local = normalize(cross(right, dir));
 
-        rayDirection = normalize(aPos.x * right + aPos.y * up_local + focal_length * dir);
+        rayDirection = normalize(aPos.x * right * aspect_ratio + aPos.y * up_local + focal_length * dir);
         gl_Position = vec4(aPos, 0.0, 1.0);
     }
 )glsl";
@@ -59,7 +60,7 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
     in vec3 rayDirection;
     uniform vec3 eye;
 
-    const float EPSILON = 0.0005;
+    const float EPSILON = 0.05;
 
     float sphereSDF(vec3 pos) {
         return length(pos) - 1.0;
@@ -71,8 +72,10 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
     }
 
     float sceneSDF(vec3 pos) {
-        return min(min(boxSDF(pos, vec3(0.1, 0.1, 2)), boxSDF(pos, vec3(2, 0.1, 0.1))), boxSDF(pos, vec3(0.1, 2, 0.1)));
-        // return max(sphereSDF(pos), -boxSDF(pos, vec3(0.5, 2.0, 0.5)));
+        pos = mod(pos + vec3(2), 4) - vec3(2);
+        float floor    = min(boxSDF(pos, vec3(1.5, 0.1, 2.0)), boxSDF(pos, vec3(2.0, 0.1, 1.5)));
+        float walls    = min(boxSDF(pos, vec3(0.2, 2.0, 1.0)), boxSDF(pos, vec3(1.0, 2.0, 0.2)));
+        return min(floor, walls);
     }
 
     vec3 estimateNormal(vec3 p) {
@@ -85,21 +88,21 @@ const char *fragment_shader_source2 = GLSL_VERSION_HEADER
 
     vec3 castRay(vec3 eye, vec3 rd) {
         vec3 ray = eye;
-        float shortestDist = 128.0f;
-        ray = mod(ray + vec3(2), 4) - vec3(2);
+        const uint steps = 256;
+        const float max_dist = 2048.0;
 
-        for(int i = 0; i < 256; i++) {
+        for(int i = 0; i < steps; i++) {
             float dist = sceneSDF(ray);
-            shortestDist = min(shortestDist, dist);
 
             if(dist < EPSILON) {
-                return (vec3(1) + estimateNormal(ray) * vec3(100-i) / 100) / 2.0;
+                // return (vec3(1) + estimateNormal(ray) * vec3(steps-i) / steps) / 2.0;
+                return vec3(steps-i) / steps * (1 - length(eye - ray) / max_dist);
             }
 
             ray += dist * rd;
-            ray = mod(ray + vec3(2), 4) - vec3(2);
+            // ray = mod(ray + vec3(2), 4) - vec3(2);
 
-            if(length(ray) > 100.0) {
+            if(length(eye - ray) > max_dist) {
                 return vec3(0.0, 0.0, 0.0);
             }
         }

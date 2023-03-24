@@ -30,6 +30,7 @@ void Game::update() {
   glm::vec3 camera_delta(0);
   std::cout << 1.0f / (deltatime / 1000.0f) << std::endl;
 
+  float speed = 2.f;
 
   if (m_keystates[SDL_SCANCODE_W] & Keystate::PRESSED) {
     camera_delta += deltafloat * glm::vec3(0, 0, 1);
@@ -56,9 +57,9 @@ void Game::update() {
 
   glm::vec3 right = glm::cross(dir, glm::vec3(0, 1, 0));
   right = glm::normalize(right);
-  eyepos += right * camera_delta.x;
-  eyepos += dir * camera_delta.z;
-  eyepos.y += camera_delta.y;
+  eyepos += right * camera_delta.x * speed;
+  eyepos += glm::normalize(dir * glm::vec3(1, 0, 1)) * camera_delta.z * speed;
+  eyepos.y += camera_delta.y * speed;
 
   m_renderer.m_raymarcher.setCameraPosition(eyepos);
   m_camera.moveLocal(camera_delta);
