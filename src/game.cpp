@@ -28,7 +28,7 @@ void Game::update() {
   // eyepos = glm::rotate(eyepos, (float)(m_frameTime) / 100.0f / 3.14f, glm::normalize(glm::vec3(1,1,0)));
 
   glm::vec3 camera_delta(0);
-  std::cout << 1.0f / (deltatime / 1000.0f) << std::endl;
+  // std::cout << 1.0f / (deltatime / 1000.0f) << std::endl;
 
   float speed = 2.f;
 
@@ -62,6 +62,8 @@ void Game::update() {
   eyepos.y += camera_delta.y * speed;
 
   m_renderer.m_raymarcher.setCameraPosition(eyepos);
+  m_renderer.m_ddamarcher.setCameraPosition(eyepos);
+
   m_camera.moveLocal(camera_delta);
 
   for (u32 i = 0; i < SDL_NUM_SCANCODES; i++) {
@@ -75,7 +77,7 @@ void Game::draw() {
   m_renderer.clear();
   // m_renderer.updateView(m_camera);
   // m_renderer.drawCube(glm::mat4(1));
-  m_renderer.drawScreen();
+  m_renderer.draw();
 }
 
 void Game::onKeyboardEvent(const SDL_KeyboardEvent &event) {
@@ -100,6 +102,7 @@ void Game::onMouseMotionEvent(const SDL_MouseMotionEvent &event) {
   dir = glm::rotate(dir, event.yrel / 1000.0f, right);
 
   m_renderer.m_raymarcher.setCameraDirection(dir);
+  m_renderer.m_ddamarcher.setCameraDirection(dir);
 }
 
 void Game::onMouseButtonEvent(const SDL_MouseButtonEvent &event) {}

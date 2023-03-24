@@ -76,24 +76,19 @@ Renderer::Renderer()
 
 void Renderer::clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 
-void Renderer::drawScreen() {
-  m_raymarcher.use();
+void Renderer::draw() {
+  m_ddamarcher.use();
   m_vao2.bind();
-  m_ssbo.bind();
   glDrawElements(GL_TRIANGLES, sizeof(screen_indices) / sizeof(*screen_indices),
                  GL_UNSIGNED_INT, 0);
 }
 
-void Renderer::updateView(const Camera &camera) {
-  const auto &m = camera.getViewProj();
-  m_rasterizer.setViewProjMatrix(m);
-}
 
-void Renderer::drawCube(const glm::mat4 &transform) {
-  m_rasterizer.use();
-  m_vao.bind();
-  m_rasterizer.setModelMatrix(transform);
-  glDrawElements(GL_TRIANGLES,
-                 sizeof(solid_box_indices) / sizeof(*solid_box_indices),
-                 GL_UNSIGNED_INT, 0);
-}
+// void Renderer::drawCube(const glm::mat4 &transform) {
+//   m_rasterizer.use();
+//   m_vao.bind();
+//   m_rasterizer.setModelMatrix(transform);
+//   glDrawElements(GL_TRIANGLES,
+//                  sizeof(solid_box_indices) / sizeof(*solid_box_indices),
+//                  GL_UNSIGNED_INT, 0);
+// }

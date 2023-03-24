@@ -2,6 +2,7 @@
 #include "graphics/camera.hpp"
 #include "gl/buffer.hpp"
 #include "gl/vao.hpp"
+#include "graphics/shaders/ddamarcher.hpp"
 #include "graphics/shaders/rasterizer.hpp"
 #include "graphics/shaders/raymarcher.hpp"
 
@@ -18,10 +19,9 @@ class Renderer {
 public:
   Renderer();
   void clear();
-  void drawScreen();
-  void updateView(const Camera &);
-  void drawCube(const glm::mat4 &transform);
+  void draw();
 
   RasterizerShader m_rasterizer;
   RaymarcherShader m_raymarcher;
+  DDAMarcherShader m_ddamarcher;
 };
