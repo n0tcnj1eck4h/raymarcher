@@ -11,14 +11,18 @@
 #include <glm/gtx/transform.hpp>
 #include <iostream>
 
+static glm::vec3 eyepos(0, 0, 0);
+static glm::vec3 dir = glm::vec3(0, 0, 1);
+
 Game::Game() : m_camera(0.01f, 100.0f, 16.0f / 9.0f, 80.0f) {
   m_frameTime = m_lastFrameTime = SDL_GetTicks64();
+  m_renderer.m_raymarcher.setCameraPosition(eyepos);
+  m_renderer.m_ddamarcher.setCameraPosition(eyepos);
+  m_renderer.m_raymarcher.setCameraDirection(dir);
+  m_renderer.m_ddamarcher.setCameraDirection(dir);
 }
 
 Game::~Game() {}
-
-static glm::vec3 eyepos(5, 5, 5);
-static glm::vec3 dir = -glm::normalize(eyepos);
 
 void Game::update() {
   m_frameTime = SDL_GetTicks64();
