@@ -1,7 +1,7 @@
 #pragma once
 
-#define WINDOW_WIDTH (720 * 2)
-#define WINDOW_HEIGHT (720 * 2 * 9 / 16)
+#define WINDOW_WIDTH (1080)
+#define WINDOW_HEIGHT (WINDOW_WIDTH * 9 / 16)
 
 // Use CPPFLAGS while building
 // #define USE_PREHISTORIC_GL

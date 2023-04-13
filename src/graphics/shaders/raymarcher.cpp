@@ -62,7 +62,7 @@ static const char *frag_source = GLSL_VERSION_HEADER
 
     vec3 castRay(vec3 eye, vec3 rd) {
         vec3 ray = eye;
-        const uint steps = 1024;
+        const int steps = 1024;
         const float max_dist = 2048.0 * 2;
 
         for(int i = 0; i < steps; i++) {

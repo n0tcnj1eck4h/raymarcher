@@ -74,7 +74,7 @@ Renderer::Renderer() {
 void Renderer::clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 
 void Renderer::draw() {
-  m_ddamarcher.use();
+  m_raymarcher.use();
   m_vao2.bind();
   glDrawElements(GL_TRIANGLES, sizeof(screen_indices) / sizeof(*screen_indices),
                  GL_UNSIGNED_INT, 0);
