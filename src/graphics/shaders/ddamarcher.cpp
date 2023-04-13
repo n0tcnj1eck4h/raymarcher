@@ -13,8 +13,8 @@ static const char *vert_source = GLSL_VERSION_HEADER
     const vec3 up = vec3(0, 1, 0);
 
     void main() {
-        const vec3 right = normalize(cross(dir, up));
-        const vec3 up_local = normalize(cross(right, dir));
+        vec3 right = normalize(cross(dir, up));
+        vec3 up_local = normalize(cross(right, dir));
 
         rayDirection = normalize(aPos.x * right * aspect_ratio + aPos.y * up_local + focal_length * dir);
         gl_Position = vec4(aPos, 0.0, 1.0);
@@ -23,11 +23,11 @@ static const char *vert_source = GLSL_VERSION_HEADER
 
 static const char *frag_source = GLSL_VERSION_HEADER
     R"glsl(
-    layout(std430, binding = 2) buffer bData {
-        float r;
-        float g;
-        float b;
-    };
+    // layout(std430, binding = 2) buffer bData {
+    //     float r;
+    //     float g;
+    //     float b;
+    // };
 
     out vec4 FragColor;
     in vec3 rayDirection;
@@ -72,8 +72,8 @@ static const char *frag_source = GLSL_VERSION_HEADER
 )glsl";
 
 DDAMarcherShader::DDAMarcherShader()
-    : GLProgram(vert_source, frag_source),
-      m_dirUniform(getUniform("dir")), m_eyeUniform(getUniform("eye")) {}
+    : GLProgram(vert_source, frag_source), m_dirUniform(getUniform("dir")),
+      m_eyeUniform(getUniform("eye")) {}
 
 void DDAMarcherShader::setCameraDirection(const glm::vec3 &dir) {
   use();

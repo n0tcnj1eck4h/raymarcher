@@ -40,8 +40,7 @@ extern "C" void messageCallback(GLenum, GLenum type, GLuint, GLenum, GLsizei,
 }
 #endif
 
-Renderer::Renderer()
-{
+Renderer::Renderer() {
 
 #ifndef USE_PREHISTORIC_GL
   glDebugMessageCallback(messageCallback, nullptr);
@@ -63,8 +62,6 @@ Renderer::Renderer()
 
   m_ibo2.data(screen_indices, sizeof(screen_indices));
   m_vbo2.data(screen_vertices, sizeof(screen_vertices));
-  m_ssbo.data(ssbo_data, sizeof(ssbo_data));
-  m_ssbo.bindBase(2);
 
   m_vao2.attachAttrib(m_vbo2, 0, 2, GL_FLOAT, 0, nullptr);
   m_vao2.attachIBO(m_ibo2);
@@ -82,7 +79,6 @@ void Renderer::draw() {
   glDrawElements(GL_TRIANGLES, sizeof(screen_indices) / sizeof(*screen_indices),
                  GL_UNSIGNED_INT, 0);
 }
-
 
 // void Renderer::drawCube(const glm::mat4 &transform) {
 //   m_rasterizer.use();

@@ -22,8 +22,3 @@ void GLVertexArray::attachIBO(const GLElementArrayBuffer &ibo) {
   bind();
   ibo.bind();
 }
-
-void GLVertexArray::attachSSBO(const GLShaderStorageBuffer &ssbo) {
-  bind();
-  ssbo.bind();
-}

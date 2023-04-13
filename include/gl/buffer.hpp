@@ -28,8 +28,10 @@ public:
   GLElementArrayBuffer() : GLBuffer(GL_ELEMENT_ARRAY_BUFFER){};
 };
 
+#ifndef USE_PREHISTORIC_GL
 class GLShaderStorageBuffer : public GLBuffer {
 public:
   GLShaderStorageBuffer() : GLBuffer(GL_SHADER_STORAGE_BUFFER){};
   void bindBase(GLuint binding_location);
 };
+#endif
