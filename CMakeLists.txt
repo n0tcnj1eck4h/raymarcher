@@ -31,9 +31,7 @@ target_include_directories(cotmve PUBLIC ${SDL2_INCLUDE_DIRS})
 target_link_libraries(cotmve PUBLIC ${SDL2_LIBRARIES})
 
 find_package(glbinding REQUIRED)
-target_include_directories(cotmve PUBLIC ${GLBINDING_INCLUDES})
 target_link_libraries(cotmve PUBLIC glbinding::glbinding glbinding::glbinding-aux)
 
-
-# link glbinding
-# link sd2
+find_package(glm REQUIRED)
+target_include_directories(cotmve PUBLIC ${GLM_INCLUDE_DIRS})
