@@ -4,6 +4,7 @@
 #include "SDL2/SDL_scancode.h"
 #include "graphics/camera.hpp"
 #include "graphics/renderer.hpp"
+#include "imgui.h"
 #include "types.hpp"
 
 enum Keystate : u8 {

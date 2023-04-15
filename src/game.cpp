@@ -3,6 +3,7 @@
 #include "SDL2/SDL_timer.h"
 #include "graphics/camera.hpp"
 #include "graphics/renderer.hpp"
+#include "imgui.h"
 #include <glm/ext/scalar_constants.hpp>
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
@@ -29,7 +30,8 @@ void Game::update() {
   u64 deltatime = m_frameTime - m_lastFrameTime;
   float deltafloat = deltatime / 1000.0f;
 
-  // eyepos = glm::rotate(eyepos, (float)(m_frameTime) / 100.0f / 3.14f, glm::normalize(glm::vec3(1,1,0)));
+  // eyepos = glm::rotate(eyepos, (float)(m_frameTime) / 100.0f / 3.14f,
+  // glm::normalize(glm::vec3(1,1,0)));
 
   glm::vec3 camera_delta(0);
   // std::cout << 1.0f / (deltatime / 1000.0f) << std::endl;
@@ -57,7 +59,6 @@ void Game::update() {
   if (m_keystates[SDL_SCANCODE_LSHIFT] & Keystate::PRESSED) {
     camera_delta *= 8.f;
   }
-
 
   glm::vec3 right = glm::cross(dir, glm::vec3(0, 1, 0));
   right = glm::normalize(right);

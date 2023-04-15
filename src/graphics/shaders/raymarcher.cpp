@@ -34,7 +34,7 @@ static const char *frag_source = GLSL_VERSION_HEADER
     uniform vec3 eye;
     vec3 ray = eye;
 
-    const float EPSILON = 0.00005;
+    const float EPSILON = 0.005;
 
     float sphereSDF(vec3 ray, vec3 pos) {
         return length(ray - pos) - 1.0;
@@ -47,9 +47,10 @@ static const char *frag_source = GLSL_VERSION_HEADER
 
     float sceneSDF(vec3 ray) {
         ray = mod(ray + vec3(2), 4) - vec3(2);
-        float floor    = min(boxSDF(ray, vec3(1.5, 0.1, 2.0)), boxSDF(ray, vec3(2.0, 0.1, 1.5)));
-        float walls    = min(boxSDF(ray, vec3(0.2, 2.0, 1.0)), boxSDF(ray, vec3(1.0, 2.0, 0.2)));
-        return min(floor, walls);
+        // float floor    = min(boxSDF(ray, vec3(1.5, 0.1, 2.0)), boxSDF(ray, vec3(2.0, 0.1, 1.5)));
+        // float walls    = min(boxSDF(ray, vec3(0.2, 2.0, 1.0)), boxSDF(ray, vec3(1.0, 2.0, 0.2)));
+        // return min(floor, walls);
+        return sphereSDF(ray, vec3(0, 0, 0));
     }
 
     vec3 estimateNormal(vec3 p) {
@@ -62,26 +63,27 @@ static const char *frag_source = GLSL_VERSION_HEADER
 
     vec3 castRay(vec3 eye, vec3 rd) {
         vec3 ray = eye;
-        const int steps = 1024;
-        const float max_dist = 2048.0 * 2;
+        const int steps = 256;
+        const float max_dist = 2048.0;
+        float ray_length = 0.0;
 
         for(int i = 0; i < steps; i++) {
             float dist = sceneSDF(ray);
 
             if(dist < EPSILON) {
                 vec3 normal = estimateNormal(ray);
-                float distance = length(eye - ray);
-                float distance_norm = 1.0 - distance / max_dist;
+                float distance_norm = 1.0 - ray_length / max_dist;
                 float ambient = 1.0 - float(i) / float(steps);
                 vec3 color = (vec3(0.5) + normal / 2.0);
 
-                // return color * dot(-rd, normal) * ambient / distance;
-                return vec3(1) * ambient;
+                // return color * dot(-rd, normal) * ambient / ray_length;
+                return vec3(1) * ambient * color;
             }
 
+            ray_length += dist;
             ray += dist * rd;
 
-            if(length(eye - ray) > max_dist) {
+            if(ray_length > max_dist) {
                 return vec3(0.0, 0.0, 0.0);
             }
         }

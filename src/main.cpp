@@ -6,7 +6,11 @@
 #include "config.hpp"
 #include "game.hpp"
 #include "glbinding/glbinding.h"
+#include "imgui.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_sdl2.h"
 #include <cassert>
+#include <glbinding/ProcAddress.h>
 #include <iostream>
 
 int main(int, const char **) {
@@ -31,38 +35,70 @@ int main(int, const char **) {
 
   // SDL_GL_SetSwapInterval(0);
 
-  glbinding::initialize(nullptr);
+  glbinding::initialize(
+      reinterpret_cast<glbinding::ProcAddress (*)(const char *)>(
+          SDL_GL_GetProcAddress));
 
-  SDL_SetRelativeMouseMode(SDL_TRUE);
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
+  ImGui_ImplOpenGL3_Init("#version 330");
+
+  ImGuiIO &io = ImGui::GetIO();
+  (void)io;
+
+  ImGui::StyleColorsDark();
+
+  // SDL_SetRelativeMouseMode(SDL_TRUE);
   SDL_ShowWindow(window);
+
+  bool show_demo_window = true;
 
   {
     Game game;
     SDL_Event event;
     while (true) {
       while (SDL_PollEvent(&event)) {
+        ImGui_ImplSDL2_ProcessEvent(&event);
         switch (event.type) {
         case SDL_QUIT:
           goto shutdown;
         case SDL_MOUSEMOTION:
-          game.onMouseMotionEvent(event.motion);
+          if (!io.WantCaptureMouse)
+            game.onMouseMotionEvent(event.motion);
           break;
         case SDL_KEYDOWN:
-          game.onKeyboardEvent(event.key);
+          if (!io.WantCaptureKeyboard)
+            game.onKeyboardEvent(event.key);
           break;
         case SDL_KEYUP:
-          game.onKeyboardEvent(event.key);
+          if (!io.WantCaptureKeyboard)
+            game.onKeyboardEvent(event.key);
           break;
         }
       }
 
       game.update();
+
+      ImGui_ImplOpenGL3_NewFrame();
+      ImGui_ImplSDL2_NewFrame();
+      ImGui::NewFrame();
+
       game.draw();
+
+      if (show_demo_window)
+        ImGui::ShowDemoWindow(&show_demo_window);
+
+      ImGui::Render();
+      ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
       SDL_GL_SwapWindow(window);
     }
   }
 
 shutdown:
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplSDL2_Shutdown();
+  ImGui::DestroyContext();
   SDL_GL_DeleteContext(gl_context);
   SDL_DestroyWindow(window);
   SDL_Quit();

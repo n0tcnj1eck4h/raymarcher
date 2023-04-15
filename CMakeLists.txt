@@ -11,6 +11,13 @@ add_executable(cotmve
   src/gl/vao.cpp
   src/gl/buffer.cpp
   src/game.cpp
+  src/imgui/imgui_demo.cpp
+  src/imgui/imgui_draw.cpp
+  src/imgui/imgui_tables.cpp
+  src/imgui/imgui_impl_opengl3.cpp
+  src/imgui/imgui.cpp
+  src/imgui/imgui_impl_sdl2.cpp
+  src/imgui/imgui_widgets.cpp
   src/graphics/camera.cpp
   src/graphics/renderer.cpp
   src/graphics/hwoctree.cpp
@@ -24,6 +31,7 @@ if(USE_PREHISTORIC_GL)
 endif()
 
 target_include_directories(cotmve PUBLIC include)
+target_include_directories(cotmve PUBLIC include/imgui)
 target_compile_features(cotmve PUBLIC cxx_std_17)
 
 find_package(SDL2 REQUIRED)

@@ -7,12 +7,9 @@ class GLProgram;
 class GLUniform {
   const GLProgram &m_program;
   const GLuint m_location;
-  GLUniform(const GLProgram &program, const char *location);
-  GLUniform(const GLUniform &) = delete;
-  GLUniform(GLUniform &&) = delete;
-  friend class GLProgram;
 
 public:
+  GLUniform(const GLProgram &program, const char *location);
   void matrix(const glm::mat4 &matrix);
   void vec3(const glm::vec3 &vector);
 };
