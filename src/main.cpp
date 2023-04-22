@@ -49,7 +49,7 @@ int main(int, const char **) {
 
   ImGui::StyleColorsDark();
 
-  // SDL_SetRelativeMouseMode(SDL_TRUE);
+  SDL_SetRelativeMouseMode(SDL_FALSE);
   SDL_ShowWindow(window);
 
   bool show_demo_window = true;
@@ -63,6 +63,11 @@ int main(int, const char **) {
         switch (event.type) {
         case SDL_QUIT:
           goto shutdown;
+        case SDL_MOUSEBUTTONUP:
+        case SDL_MOUSEBUTTONDOWN:
+          if (!io.WantCaptureMouse)
+            game.onMouseButtonEvent(event.button);
+          break;
         case SDL_MOUSEMOTION:
           if (!io.WantCaptureMouse)
             game.onMouseMotionEvent(event.motion);
@@ -78,16 +83,15 @@ int main(int, const char **) {
         }
       }
 
-      game.update();
-
       ImGui_ImplOpenGL3_NewFrame();
       ImGui_ImplSDL2_NewFrame();
       ImGui::NewFrame();
 
-      game.draw();
-
       if (show_demo_window)
         ImGui::ShowDemoWindow(&show_demo_window);
+
+      game.update();
+      game.draw();
 
       ImGui::Render();
       ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

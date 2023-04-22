@@ -4,6 +4,8 @@
 #include "graphics/camera.hpp"
 #include "graphics/renderer.hpp"
 #include "imgui.h"
+#include <SDL_events.h>
+#include <SDL_stdinc.h>
 #include <glm/ext/scalar_constants.hpp>
 #include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
@@ -21,6 +23,7 @@ Game::Game() : m_camera(0.01f, 100.0f, 16.0f / 9.0f, 80.0f) {
   m_renderer.m_ddamarcher.setCameraPosition(eyepos);
   m_renderer.m_raymarcher.setCameraDirection(dir);
   m_renderer.m_ddamarcher.setCameraDirection(dir);
+  m_hasFocus = true;
 }
 
 Game::~Game() {}
@@ -30,8 +33,17 @@ void Game::update() {
   u64 deltatime = m_frameTime - m_lastFrameTime;
   float deltafloat = deltatime / 1000.0f;
 
+  for (u32 i = 0; i < SDL_NUM_SCANCODES; i++) {
+    m_keystates[i] = (Keystate)(m_keystates[i] & 0b01);
+  }
+
+  m_lastFrameTime = m_frameTime;
+
   // eyepos = glm::rotate(eyepos, (float)(m_frameTime) / 100.0f / 3.14f,
   // glm::normalize(glm::vec3(1,1,0)));
+
+  if (!m_hasFocus)
+    return;
 
   glm::vec3 camera_delta(0);
   // std::cout << 1.0f / (deltatime / 1000.0f) << std::endl;
@@ -70,12 +82,6 @@ void Game::update() {
   m_renderer.m_ddamarcher.setCameraPosition(eyepos);
 
   m_camera.moveLocal(camera_delta);
-
-  for (u32 i = 0; i < SDL_NUM_SCANCODES; i++) {
-    m_keystates[i] = (Keystate)(m_keystates[i] & 0b01);
-  }
-
-  m_lastFrameTime = m_frameTime;
 }
 
 void Game::draw() {
@@ -95,9 +101,24 @@ void Game::onKeyboardEvent(const SDL_KeyboardEvent &event) {
       m_keystates[event.keysym.scancode] = Keystate::JUST_RELEASED;
     }
   }
+
+  if (event.keysym.scancode == SDL_SCANCODE_ESCAPE &&
+      event.state == SDL_PRESSED && m_hasFocus) {
+    focus(false);
+  }
+}
+
+bool Game::focus() { return m_hasFocus; }
+
+void Game::focus(bool b) {
+  m_hasFocus = b;
+  SDL_SetRelativeMouseMode((SDL_bool)b);
+  ImGui::GetIO().SetAppAcceptingEvents(!b);
 }
 
 void Game::onMouseMotionEvent(const SDL_MouseMotionEvent &event) {
+  if (!m_hasFocus)
+    return;
   m_camera.rotateY(-event.xrel / 1000.0);
   m_camera.rotateX(event.yrel / 1000.0);
 
@@ -110,4 +131,7 @@ void Game::onMouseMotionEvent(const SDL_MouseMotionEvent &event) {
   m_renderer.m_ddamarcher.setCameraDirection(dir);
 }
 
-void Game::onMouseButtonEvent(const SDL_MouseButtonEvent &event) {}
+void Game::onMouseButtonEvent(const SDL_MouseButtonEvent &event) {
+  if (!m_hasFocus)
+    focus(true);
+}

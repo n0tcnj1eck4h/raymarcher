@@ -34,7 +34,7 @@ static const char *frag_source = GLSL_VERSION_HEADER
     uniform vec3 eye;
     vec3 ray = eye;
 
-    const float EPSILON = 0.005;
+    const float EPSILON = 0.05;
 
     float sphereSDF(vec3 ray, vec3 pos) {
         return length(ray - pos) - 1.0;
@@ -63,7 +63,7 @@ static const char *frag_source = GLSL_VERSION_HEADER
 
     vec3 castRay(vec3 eye, vec3 rd) {
         vec3 ray = eye;
-        const int steps = 256;
+        const int steps = 32;
         const float max_dist = 2048.0;
         float ray_length = 0.0;
 
@@ -77,7 +77,7 @@ static const char *frag_source = GLSL_VERSION_HEADER
                 vec3 color = (vec3(0.5) + normal / 2.0);
 
                 // return color * dot(-rd, normal) * ambient / ray_length;
-                return vec3(1) * ambient * color;
+                return vec3(1) * ambient * color * distance_norm;
             }
 
             ray_length += dist;

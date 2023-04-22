@@ -19,12 +19,15 @@ class Game {
   Camera m_camera;
   Keystate m_keystates[SDL_NUM_SCANCODES] = {Keystate::RELEASED};
   u64 m_lastFrameTime, m_frameTime;
+  bool m_hasFocus;
 
 public:
   Game();
   ~Game();
   void update();
   void draw();
+  bool focus();
+  void focus(bool);
   void onKeyboardEvent(const SDL_KeyboardEvent &event);
   void onMouseMotionEvent(const SDL_MouseMotionEvent &event);
   void onMouseButtonEvent(const SDL_MouseButtonEvent &event);
