@@ -45,11 +45,8 @@ int main(int, const char **) {
   ImGui_ImplOpenGL3_Init("#version 330");
 
   ImGuiIO &io = ImGui::GetIO();
-  (void)io;
-
   ImGui::StyleColorsDark();
 
-  SDL_SetRelativeMouseMode(SDL_FALSE);
   SDL_ShowWindow(window);
 
   bool show_demo_window = true;
@@ -57,6 +54,7 @@ int main(int, const char **) {
   {
     Game game;
     SDL_Event event;
+    game.focus(true);
     while (true) {
       while (SDL_PollEvent(&event)) {
         ImGui_ImplSDL2_ProcessEvent(&event);

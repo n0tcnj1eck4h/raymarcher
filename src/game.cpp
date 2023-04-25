@@ -86,9 +86,32 @@ void Game::update() {
 
 void Game::draw() {
   m_renderer.clear();
-  // m_renderer.updateView(m_camera);
-  // m_renderer.drawCube(glm::mat4(1));
   m_renderer.draw();
+
+  const float PAD = 10.0f;
+  const ImGuiViewport *viewport = ImGui::GetMainViewport();
+  ImVec2 work_pos = viewport->WorkPos;
+  ImVec2 work_size = viewport->WorkSize;
+  ImVec2 window_pos, window_pos_pivot;
+  window_pos.x = (work_pos.x + PAD);
+  window_pos.y = (work_pos.y + PAD);
+  window_pos_pivot.x = 0.0f;
+  window_pos_pivot.y = 0.0f;
+  ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
+
+  ImGuiIO &io = ImGui::GetIO();
+  ImGui::SetNextWindowBgAlpha(0.35f);
+  if (ImGui::Begin("Example: Simple overlay", nullptr,
+                   ImGuiWindowFlags_NoDecoration |
+                       ImGuiWindowFlags_AlwaysAutoResize |
+                       ImGuiWindowFlags_NoFocusOnAppearing |
+                       ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove)) {
+    if (ImGui::IsMousePosValid())
+      ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
+    else
+      ImGui::Text("Mouse Position: <invalid>");
+  }
+  ImGui::End();
 }
 
 void Game::onKeyboardEvent(const SDL_KeyboardEvent &event) {
@@ -112,8 +135,11 @@ bool Game::focus() { return m_hasFocus; }
 
 void Game::focus(bool b) {
   m_hasFocus = b;
-  SDL_SetRelativeMouseMode((SDL_bool)b);
-  ImGui::GetIO().SetAppAcceptingEvents(!b);
+  SDL_SetRelativeMouseMode(b ? SDL_TRUE : SDL_FALSE);
+
+  ImGuiIO &io = ImGui::GetIO();
+  io.SetAppAcceptingEvents(!b);
+  io.ClearInputKeys();
 }
 
 void Game::onMouseMotionEvent(const SDL_MouseMotionEvent &event) {
