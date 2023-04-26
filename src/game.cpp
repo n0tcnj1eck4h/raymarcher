@@ -18,6 +18,7 @@
 static glm::vec3 eyepos(0, 0, 0);
 static glm::vec3 dir = glm::vec3(0, 0, 1);
 static int shapeID = 0;
+static int colorflags = 0;
 
 static int steps = 128;
 static float max_dist = 1024.0;
@@ -50,15 +51,16 @@ void Game::update() {
 
   if (ImGui::Begin("Scene", nullptr)) {
 
-    if (ImGui::RadioButton("Sphere", &shapeID, 0) ||
-        ImGui::RadioButton("Cube", &shapeID, 1) ||
-        // ImGui::RadioButton("Test", &shapeID, 69) ||
+    ImGui::Text("Shape");
+    if (ImGui::RadioButton("Sphere", &shapeID, 0) |
+        ImGui::RadioButton("Cube", &shapeID, 1) |
         ImGui::RadioButton("Tunnels", &shapeID, 2)) {
       m_renderer.m_raymarcher.shapeIDUniform.set(shapeID);
     }
 
     ImGui::Separator();
 
+    ImGui::Text("Parameters");
     if (ImGui::SliderFloat("Max distance", &max_dist, 32.0f, 2048.0f)) {
       m_renderer.m_raymarcher.maxDistanceUniform.set(max_dist);
     }
@@ -69,6 +71,35 @@ void Game::update() {
 
     if (ImGui::SliderFloat("Epsilon", &EPSILON, 0.005f, 0.25f)) {
       m_renderer.m_raymarcher.epsilonUniform.set(EPSILON);
+    }
+
+    ImGui::Separator();
+
+    ImGui::Text("Colors");
+    static bool b[4];
+    if (ImGui::Checkbox("Normals", b)) {
+      colorflags ^= 1;
+      m_renderer.m_raymarcher.colorflagsUniform.set(colorflags);
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::Checkbox("Steps", b + 1)) {
+      colorflags ^= 2;
+      m_renderer.m_raymarcher.colorflagsUniform.set(colorflags);
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::Checkbox("Distance", b + 2)) {
+      colorflags ^= 4;
+      m_renderer.m_raymarcher.colorflagsUniform.set(colorflags);
+    }
+
+    ImGui::Separator();
+    if (ImGui::Checkbox("Modulo", b + 3)) {
+      colorflags ^= 8;
+      m_renderer.m_raymarcher.colorflagsUniform.set(colorflags);
     }
   }
   ImGui::End();

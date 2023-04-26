@@ -13,5 +13,6 @@ public:
   GLUniform<int> maxStepsUniform;
   GLUniform<float> maxDistanceUniform;
   GLUniform<float> epsilonUniform;
+  GLUniform<int> colorflagsUniform;
   RaymarcherShader();
 };

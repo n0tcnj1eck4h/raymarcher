@@ -30,10 +30,14 @@ static const char *frag_source = GLSL_VERSION_HEADER
     // };
 
     uniform vec3 eye;
-    uniform int shapeID;
+    uniform int shapeID = 0;
     uniform int steps = 128;
     uniform float max_dist = 2048.0;
     uniform float EPSILON = 0.025;
+    uniform int colorflags = 0;
+    // 0 - normal
+    // 1 - ambient
+    // 2 - distance
 
     out vec4 FragColor;
     in vec3 rayDirection;
@@ -48,7 +52,8 @@ static const char *frag_source = GLSL_VERSION_HEADER
     }
 
     float sceneSDF(vec3 ray) {
-        ray = mod(ray + vec3(4), 8) - vec3(4);
+        if((colorflags & 8) > 0)
+            ray = mod(ray + vec3(2), 4) - vec3(2);
         if(shapeID == 0)
             return sphereSDF(ray, vec3(0, 0, 0));
         else if(shapeID == 1)
@@ -81,13 +86,24 @@ static const char *frag_source = GLSL_VERSION_HEADER
             float dist = sceneSDF(ray);
 
             if(dist < EPSILON) {
-                vec3 normal = estimateNormal(ray);
-                float distance_norm = 1.0 - ray_length / max_dist;
-                float ambient = 1.0 - float(i) / float(steps);
-                vec3 color = (vec3(0.5) + normal / 2.0);
+                vec3 color = vec3(1);
 
-                // return color * dot(-rd, normal) * ambient / ray_length;
-                return vec3(1) * ambient * color * distance_norm;
+                if((colorflags & 1) > 0) {
+                    vec3 normal = estimateNormal(ray);
+                    color *= (vec3(0.5) + normal / 2.0);
+                }
+
+                if((colorflags & 2) > 0) {
+                    float ambient = 1.0 - float(i) / float(steps);
+                    color *= ambient;
+                }
+
+                if((colorflags & 4) > 0) {
+                    float distance_norm = 1.0 - ray_length / max_dist;
+                    color *= distance_norm;
+                }
+
+                return color;
             }
 
             ray_length += dist;
@@ -111,4 +127,5 @@ RaymarcherShader::RaymarcherShader()
     : GLProgram(vert_source, frag_source), directionUniform(*this, "dir"),
       eyeposUniform(*this, "eye"), aspectRatioUniform(*this, "aspect_ratio"),
       shapeIDUniform(*this, "shapeID"), maxStepsUniform(*this, "steps"),
-      maxDistanceUniform(*this, "max_dist"), epsilonUniform(*this, "EPSILON") {}
+      maxDistanceUniform(*this, "max_dist"), epsilonUniform(*this, "EPSILON"),
+      colorflagsUniform(*this, "colorflags") {}
