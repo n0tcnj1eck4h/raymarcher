@@ -19,9 +19,9 @@ int main(int, const char **) {
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_VERSION_MAJOR);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_VERSION_MINOR);
 
-  auto window =
-      SDL_CreateWindow("xd", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                       WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
+  auto window = SDL_CreateWindow(
+      "COTMVE", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH,
+      WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
   if (!window) {
     std::cerr << SDL_GetError() << std::endl;
     assert(window);
@@ -49,7 +49,7 @@ int main(int, const char **) {
 
   SDL_ShowWindow(window);
 
-  bool show_demo_window = true;
+  static bool show_demo_window = true;
 
   {
     Game game;
@@ -77,6 +77,13 @@ int main(int, const char **) {
         case SDL_KEYUP:
           if (!io.WantCaptureKeyboard)
             game.onKeyboardEvent(event.key);
+          break;
+        case SDL_WINDOWEVENT:
+          switch (event.window.event) {
+          case SDL_WINDOWEVENT_RESIZED:
+            game.onWindowResize(event.window.data1, event.window.data2);
+            break;
+          }
           break;
         }
       }

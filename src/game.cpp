@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include "SDL2/SDL_scancode.h"
 #include "SDL2/SDL_timer.h"
+#include "config.hpp"
 #include "graphics/camera.hpp"
 #include "graphics/renderer.hpp"
 #include "imgui.h"
@@ -20,10 +21,12 @@ static glm::vec3 dir = glm::vec3(0, 0, 1);
 Game::Game() : m_camera(0.01f, 100.0f, 16.0f / 9.0f, 80.0f) {
   m_frameTime = m_lastFrameTime = SDL_GetTicks64();
   m_renderer.m_raymarcher.setCameraPosition(eyepos);
-  m_renderer.m_ddamarcher.setCameraPosition(eyepos);
+  // m_renderer.m_ddamarcher.setCameraPosition(eyepos);
   m_renderer.m_raymarcher.setCameraDirection(dir);
-  m_renderer.m_ddamarcher.setCameraDirection(dir);
+  // m_renderer.m_ddamarcher.setCameraDirection(dir);
   m_hasFocus = true;
+
+  m_renderer.viewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 Game::~Game() {}
@@ -38,6 +41,10 @@ void Game::update() {
   }
 
   m_lastFrameTime = m_frameTime;
+
+  if (ImGui::Begin("Scene", nullptr))
+    ;
+  ImGui::End();
 
   // eyepos = glm::rotate(eyepos, (float)(m_frameTime) / 100.0f / 3.14f,
   // glm::normalize(glm::vec3(1,1,0)));
@@ -79,7 +86,7 @@ void Game::update() {
   eyepos.y += camera_delta.y * speed;
 
   m_renderer.m_raymarcher.setCameraPosition(eyepos);
-  m_renderer.m_ddamarcher.setCameraPosition(eyepos);
+  // m_renderer.m_ddamarcher.setCameraPosition(eyepos);
 
   m_camera.moveLocal(camera_delta);
 }
@@ -111,6 +118,9 @@ void Game::draw() {
     else
       ImGui::Text("Mouse Position: <invalid>");
   }
+  ImGui::Text("Camera Position: (%.1f,%.1f,%.1f)", eyepos.x, eyepos.y,
+              eyepos.z);
+  ImGui::Text("Camera Direction: (%.1f,%.1f,%.1f)", dir.x, dir.y, dir.z);
   ImGui::End();
 }
 
@@ -154,10 +164,14 @@ void Game::onMouseMotionEvent(const SDL_MouseMotionEvent &event) {
   dir = glm::rotate(dir, event.yrel / 1000.0f, right);
 
   m_renderer.m_raymarcher.setCameraDirection(dir);
-  m_renderer.m_ddamarcher.setCameraDirection(dir);
+  // m_renderer.m_ddamarcher.setCameraDirection(dir);
 }
 
 void Game::onMouseButtonEvent(const SDL_MouseButtonEvent &event) {
   if (!m_hasFocus)
     focus(true);
+}
+
+void Game::onWindowResize(i64 width, i64 height) {
+  m_renderer.viewport(0, 0, width, height);
 }

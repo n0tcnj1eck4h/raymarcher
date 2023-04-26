@@ -40,6 +40,11 @@ extern "C" void messageCallback(GLenum, GLenum type, GLuint, GLenum, GLsizei,
 }
 #endif
 
+void Renderer::viewport(i32 x, i32 y, i64 width, i64 height) {
+  glViewport(x, y, width, height);
+  m_raymarcher.setAspectRatio((float)width / (float)height);
+}
+
 Renderer::Renderer() {
 
 #ifndef USE_PREHISTORIC_GL
@@ -51,7 +56,6 @@ Renderer::Renderer() {
   glEnable(GL_CULL_FACE);
   glEnable(GL_LINE_SMOOTH);
   glLineWidth(1.5f);
-  glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
   glClearColor(0, 0, 0, 1.0);
 
   m_vbo.data(box_vertices, sizeof(box_vertices));
@@ -67,7 +71,7 @@ Renderer::Renderer() {
   m_vao2.attachIBO(m_ibo2);
   m_vao2.unbind();
 
-  m_rasterizer.setDrawColor(glm::vec3(1, 0, 0));
+  // m_rasterizer.setDrawColor(glm::vec3(1, 0, 0));
   m_raymarcher.setCameraDirection(glm::normalize(glm::vec3(0, 10, 3)));
 }
 

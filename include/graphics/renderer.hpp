@@ -20,8 +20,9 @@ public:
   Renderer();
   void clear();
   void draw();
+  void viewport(i32 x, i32 y, i64 width, i64 height);
 
-  RasterizerShader m_rasterizer;
+  // RasterizerShader m_rasterizer;
   RaymarcherShader m_raymarcher;
-  DDAMarcherShader m_ddamarcher;
+  // DDAMarcherShader m_ddamarcher;
 };

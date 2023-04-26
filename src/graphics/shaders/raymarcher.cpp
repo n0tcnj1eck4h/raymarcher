@@ -9,7 +9,7 @@ static const char *vert_source = GLSL_VERSION_HEADER
     uniform vec3 dir;
     
     const float focal_length = 1.5;
-    const float aspect_ratio = 16.0 / 9.0;
+    uniform float aspect_ratio;
     const vec3 up = vec3(0, 1, 0);
 
     void main() {
@@ -29,12 +29,14 @@ static const char *frag_source = GLSL_VERSION_HEADER
     //     float b;
     // };
 
+    uniform vec3 eye;
+
     out vec4 FragColor;
     in vec3 rayDirection;
-    uniform vec3 eye;
+
     vec3 ray = eye;
 
-    const float EPSILON = 0.05;
+    const float EPSILON = 0.025;
 
     float sphereSDF(vec3 ray, vec3 pos) {
         return length(ray - pos) - 1.0;
@@ -63,7 +65,7 @@ static const char *frag_source = GLSL_VERSION_HEADER
 
     vec3 castRay(vec3 eye, vec3 rd) {
         vec3 ray = eye;
-        const int steps = 32;
+        const int steps = 128;
         const float max_dist = 2048.0;
         float ray_length = 0.0;
 
@@ -99,7 +101,8 @@ static const char *frag_source = GLSL_VERSION_HEADER
 
 RaymarcherShader::RaymarcherShader()
     : GLProgram(vert_source, frag_source), m_dirUniform(getUniform("dir")),
-      m_eyeUniform(getUniform("eye")) {}
+      m_eyeUniform(getUniform("eye")),
+      m_aspectRatioUniform(getUniform("aspect_ratio")) {}
 
 void RaymarcherShader::setCameraDirection(const glm::vec3 &dir) {
   use();
@@ -109,4 +112,9 @@ void RaymarcherShader::setCameraDirection(const glm::vec3 &dir) {
 void RaymarcherShader::setCameraPosition(const glm::vec3 &pos) {
   use();
   m_eyeUniform.vec3(pos);
+}
+
+void RaymarcherShader::setAspectRatio(float aspect_ratio) {
+  use();
+  m_aspectRatioUniform.scalar(aspect_ratio);
 }

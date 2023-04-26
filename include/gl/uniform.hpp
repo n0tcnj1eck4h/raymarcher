@@ -12,4 +12,5 @@ public:
   GLUniform(const GLProgram &program, const char *location);
   void matrix(const glm::mat4 &matrix);
   void vec3(const glm::vec3 &vector);
+  void scalar(float scalar);
 };

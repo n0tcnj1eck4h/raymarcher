@@ -31,4 +31,5 @@ public:
   void onKeyboardEvent(const SDL_KeyboardEvent &event);
   void onMouseMotionEvent(const SDL_MouseMotionEvent &event);
   void onMouseButtonEvent(const SDL_MouseButtonEvent &event);
+  void onWindowResize(i64 width, i64 height);
 };
