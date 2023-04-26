@@ -23,7 +23,6 @@ add_executable(cotmve
   src/graphics/renderer.cpp
   src/graphics/hwoctree.cpp
   src/graphics/shaders/raymarcher.cpp
-  src/graphics/shaders/rasterizer.cpp
   src/graphics/shaders/ddamarcher.cpp
 )
 

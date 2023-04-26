@@ -72,15 +72,5 @@ static const char *frag_source = GLSL_VERSION_HEADER
 )glsl";
 
 DDAMarcherShader::DDAMarcherShader()
-    : GLProgram(vert_source, frag_source), m_dirUniform(getUniform("dir")),
-      m_eyeUniform(getUniform("eye")) {}
-
-void DDAMarcherShader::setCameraDirection(const glm::vec3 &dir) {
-  use();
-  m_dirUniform.vec3(dir);
-}
-
-void DDAMarcherShader::setCameraPosition(const glm::vec3 &pos) {
-  use();
-  m_eyeUniform.vec3(pos);
-}
+    : GLProgram(vert_source, frag_source), directionUniform(*this, "dir"),
+      eyeposUniform(*this, "eye") {}

@@ -1,14 +1,12 @@
 #pragma once
 
 #include "gl/program.hpp"
+#include "gl/uniform.hpp"
 #include <glm/fwd.hpp>
 
 class DDAMarcherShader : public GLProgram {
-  GLUniform m_dirUniform;
-  GLUniform m_eyeUniform;
-
-  public:
-    DDAMarcherShader();
-    void setCameraPosition(const glm::vec3& pos);
-    void setCameraDirection(const glm::vec3& dir);
+public:
+  DDAMarcherShader();
+  GLUniform<glm::vec3> directionUniform;
+  GLUniform<glm::vec3> eyeposUniform;
 };

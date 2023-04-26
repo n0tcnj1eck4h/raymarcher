@@ -108,45 +108,7 @@ static const char *frag_source = GLSL_VERSION_HEADER
 )glsl";
 
 RaymarcherShader::RaymarcherShader()
-    : GLProgram(vert_source, frag_source), m_dirUniform(getUniform("dir")),
-      m_eyeUniform(getUniform("eye")),
-      m_aspectRatioUniform(getUniform("aspect_ratio")),
-      m_shapeIDUniform(getUniform("shapeID")),
-      m_maxStepsUniform(getUniform("steps")),
-      m_maxDistUniform(getUniform("max_dist")),
-      m_epsilonUniform(getUniform("EPSILON")) {}
-
-void RaymarcherShader::setCameraDirection(const glm::vec3 &dir) {
-  use();
-  m_dirUniform.vec3(dir);
-}
-
-void RaymarcherShader::setCameraPosition(const glm::vec3 &pos) {
-  use();
-  m_eyeUniform.vec3(pos);
-}
-
-void RaymarcherShader::setAspectRatio(float aspect_ratio) {
-  use();
-  m_aspectRatioUniform.float32(aspect_ratio);
-}
-
-void RaymarcherShader::setShapeID(i32 shapeID) {
-  use();
-  m_shapeIDUniform.int32(shapeID);
-}
-
-void RaymarcherShader::setMaxSteps(i32 steps) {
-  use();
-  m_maxStepsUniform.int32(steps);
-}
-
-void RaymarcherShader::setMaxDist(float dist) {
-  use();
-  m_maxDistUniform.float32(dist);
-}
-
-void RaymarcherShader::setEpsilon(float epsilon) {
-  use();
-  m_epsilonUniform.float32(epsilon);
-}
+    : GLProgram(vert_source, frag_source), directionUniform(*this, "dir"),
+      eyeposUniform(*this, "eye"), aspectRatioUniform(*this, "aspect_ratio"),
+      shapeIDUniform(*this, "shapeID"), maxStepsUniform(*this, "steps"),
+      maxDistanceUniform(*this, "max_dist"), epsilonUniform(*this, "EPSILON") {}

@@ -3,7 +3,6 @@
 #include "gl/vao.hpp"
 #include "graphics/camera.hpp"
 #include "graphics/shaders/ddamarcher.hpp"
-#include "graphics/shaders/rasterizer.hpp"
 #include "graphics/shaders/raymarcher.hpp"
 
 class Renderer {

@@ -25,14 +25,14 @@ static float EPSILON = 0.025;
 
 Game::Game() : m_camera(0.01f, 100.0f, 16.0f / 9.0f, 80.0f) {
   m_frameTime = m_lastFrameTime = SDL_GetTicks64();
-  m_renderer.m_raymarcher.setCameraPosition(eyepos);
+  m_renderer.m_raymarcher.eyeposUniform.set(eyepos);
   // m_renderer.m_ddamarcher.setCameraPosition(eyepos);
-  m_renderer.m_raymarcher.setCameraDirection(dir);
+  m_renderer.m_raymarcher.directionUniform.set(dir);
   // m_renderer.m_ddamarcher.setCameraDirection(dir);
   m_hasFocus = true;
 
   m_renderer.viewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-  m_renderer.m_raymarcher.setShapeID(shapeID);
+  m_renderer.m_raymarcher.shapeIDUniform.set(shapeID);
 }
 
 Game::~Game() {}
@@ -54,21 +54,21 @@ void Game::update() {
         ImGui::RadioButton("Cube", &shapeID, 1) ||
         // ImGui::RadioButton("Test", &shapeID, 69) ||
         ImGui::RadioButton("Tunnels", &shapeID, 2)) {
-      m_renderer.m_raymarcher.setShapeID(shapeID);
+      m_renderer.m_raymarcher.shapeIDUniform.set(shapeID);
     }
 
     ImGui::Separator();
 
     if (ImGui::SliderFloat("Max distance", &max_dist, 32.0f, 2048.0f)) {
-      m_renderer.m_raymarcher.setMaxDist(max_dist);
+      m_renderer.m_raymarcher.maxDistanceUniform.set(max_dist);
     }
 
     if (ImGui::SliderInt("Max steps", &steps, 1, 1024)) {
-      m_renderer.m_raymarcher.setMaxSteps(steps);
+      m_renderer.m_raymarcher.maxStepsUniform.set(steps);
     }
 
     if (ImGui::SliderFloat("Epsilon", &EPSILON, 0.005f, 0.25f)) {
-      m_renderer.m_raymarcher.setEpsilon(EPSILON);
+      m_renderer.m_raymarcher.epsilonUniform.set(EPSILON);
     }
   }
   ImGui::End();
@@ -112,7 +112,7 @@ void Game::update() {
   eyepos += glm::normalize(dir * glm::vec3(1, 0, 1)) * camera_delta.z * speed;
   eyepos.y += camera_delta.y * speed;
 
-  m_renderer.m_raymarcher.setCameraPosition(eyepos);
+  m_renderer.m_raymarcher.eyeposUniform.set(eyepos);
   // m_renderer.m_ddamarcher.setCameraPosition(eyepos);
 
   m_camera.moveLocal(camera_delta);
@@ -190,7 +190,7 @@ void Game::onMouseMotionEvent(const SDL_MouseMotionEvent &event) {
   right = glm::normalize(right);
   dir = glm::rotate(dir, event.yrel / 1000.0f, right);
 
-  m_renderer.m_raymarcher.setCameraDirection(dir);
+  m_renderer.m_raymarcher.directionUniform.set(dir);
   // m_renderer.m_ddamarcher.setCameraDirection(dir);
 }
 

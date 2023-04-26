@@ -2,17 +2,27 @@
 #include "gl/program.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
-GLUniform::GLUniform(const GLProgram &program, const char *location)
-    : m_program(program),
-      m_location(glGetUniformLocation(program.m_id, location)) {}
-
-void GLUniform::matrix(const glm::mat4 &matrix) {
-  glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(matrix));
+template <> void GLUniform<glm::mat4>::set(const glm::mat4 &value) {
+  m_program.use();
+  glUniformMatrix4fv(m_location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
-void GLUniform::vec3(const glm::vec3 &vector) {
-  glUniform3fv(m_location, 1, glm::value_ptr(vector));
+template <> void GLUniform<glm::vec2>::set(const glm::vec2 &value) {
+  m_program.use();
+  glUniform2fv(m_location, 1, glm::value_ptr(value));
 }
 
-void GLUniform::float32(float scalar) { glUniform1f(m_location, scalar); }
-void GLUniform::int32(i32 scalar) { glUniform1i(m_location, scalar); }
+template <> void GLUniform<glm::vec3>::set(const glm::vec3 &value) {
+  m_program.use();
+  glUniform3fv(m_location, 1, glm::value_ptr(value));
+}
+
+template <> void GLUniform<GLfloat>::set(const GLfloat &value) {
+  m_program.use();
+  glUniform1f(m_location, value);
+}
+
+template <> void GLUniform<GLint>::set(const GLint &value) {
+  m_program.use();
+  glUniform1i(m_location, value);
+}

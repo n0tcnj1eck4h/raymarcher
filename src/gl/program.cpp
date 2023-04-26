@@ -52,8 +52,4 @@ GLProgram::GLProgram(const char *vert_source, const char *frag_source) {
 
 GLProgram::~GLProgram() { glDeleteProgram(m_id); }
 
-void GLProgram::use() { glUseProgram(m_id); }
-
-GLUniform GLProgram::getUniform(const char *location) {
-  return GLUniform(*this, location);
-}
+void GLProgram::use() const { glUseProgram(m_id); }

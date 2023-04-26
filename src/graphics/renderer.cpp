@@ -42,7 +42,7 @@ extern "C" void messageCallback(GLenum, GLenum type, GLuint, GLenum, GLsizei,
 
 void Renderer::viewport(i32 x, i32 y, i64 width, i64 height) {
   glViewport(x, y, width, height);
-  m_raymarcher.setAspectRatio((float)width / (float)height);
+  m_raymarcher.aspectRatioUniform.set((float)width / (float)height);
 }
 
 Renderer::Renderer() {
@@ -72,7 +72,7 @@ Renderer::Renderer() {
   m_vao2.unbind();
 
   // m_rasterizer.setDrawColor(glm::vec3(1, 0, 0));
-  m_raymarcher.setCameraDirection(glm::normalize(glm::vec3(0, 10, 3)));
+  m_raymarcher.directionUniform.set(glm::normalize(glm::vec3(0, 10, 3)));
 }
 
 void Renderer::clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
