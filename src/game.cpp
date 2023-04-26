@@ -19,6 +19,10 @@ static glm::vec3 eyepos(0, 0, 0);
 static glm::vec3 dir = glm::vec3(0, 0, 1);
 static int shapeID = 0;
 
+static int steps = 128;
+static float max_dist = 1024.0;
+static float EPSILON = 0.025;
+
 Game::Game() : m_camera(0.01f, 100.0f, 16.0f / 9.0f, 80.0f) {
   m_frameTime = m_lastFrameTime = SDL_GetTicks64();
   m_renderer.m_raymarcher.setCameraPosition(eyepos);
@@ -45,10 +49,25 @@ void Game::update() {
   m_lastFrameTime = m_frameTime;
 
   if (ImGui::Begin("Scene", nullptr)) {
+
     if (ImGui::RadioButton("Sphere", &shapeID, 0) ||
         ImGui::RadioButton("Cube", &shapeID, 1) ||
         ImGui::RadioButton("Tunnels", &shapeID, 2)) {
       m_renderer.m_raymarcher.setShapeID(shapeID);
+    }
+
+    ImGui::Separator();
+
+    if (ImGui::SliderFloat("Max distance", &max_dist, 32.0f, 2048.0f)) {
+      m_renderer.m_raymarcher.setMaxDist(max_dist);
+    }
+
+    if (ImGui::SliderInt("Max steps", &steps, 1, 1024)) {
+      m_renderer.m_raymarcher.setMaxSteps(steps);
+    }
+
+    if (ImGui::SliderFloat("Epsilon", &EPSILON, 0.005f, 0.25f)) {
+      m_renderer.m_raymarcher.setEpsilon(EPSILON);
     }
   }
   ImGui::End();

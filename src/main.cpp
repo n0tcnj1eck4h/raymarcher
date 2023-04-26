@@ -92,8 +92,10 @@ int main(int, const char **) {
       ImGui_ImplSDL2_NewFrame();
       ImGui::NewFrame();
 
+#if defined(DEBUG) && 0
       if (show_demo_window)
         ImGui::ShowDemoWindow(&show_demo_window);
+#endif
 
       game.update();
       game.draw();

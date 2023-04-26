@@ -31,13 +31,12 @@ static const char *frag_source = GLSL_VERSION_HEADER
 
     uniform vec3 eye;
     uniform int shapeID;
+    uniform int steps = 128;
+    uniform float max_dist = 2048.0;
+    uniform float EPSILON = 0.025;
 
     out vec4 FragColor;
     in vec3 rayDirection;
-
-    vec3 ray = eye;
-
-    const float EPSILON = 0.025;
 
     float sphereSDF(vec3 ray, vec3 pos) {
         return length(ray - pos) - 1.0;
@@ -71,8 +70,6 @@ static const char *frag_source = GLSL_VERSION_HEADER
 
     vec3 castRay(vec3 eye, vec3 rd) {
         vec3 ray = eye;
-        const int steps = 128;
-        const float max_dist = 2048.0;
         float ray_length = 0.0;
 
         for(int i = 0; i < steps; i++) {
@@ -92,11 +89,11 @@ static const char *frag_source = GLSL_VERSION_HEADER
             ray += dist * rd;
 
             if(ray_length > max_dist) {
-                return vec3(0.0, 0.0, 0.0);
+                return vec3(0);
             }
         }
 
-        return vec3(0.0, 0.0, 0.0);
+        return vec3(0);
     }
 
     void main() {
@@ -109,7 +106,10 @@ RaymarcherShader::RaymarcherShader()
     : GLProgram(vert_source, frag_source), m_dirUniform(getUniform("dir")),
       m_eyeUniform(getUniform("eye")),
       m_aspectRatioUniform(getUniform("aspect_ratio")),
-      m_shapeIDUniform(getUniform("shapeID")) {}
+      m_shapeIDUniform(getUniform("shapeID")),
+      m_maxStepsUniform(getUniform("steps")),
+      m_maxDistUniform(getUniform("max_dist")),
+      m_epsilonUniform(getUniform("EPSILON")) {}
 
 void RaymarcherShader::setCameraDirection(const glm::vec3 &dir) {
   use();
@@ -129,4 +129,19 @@ void RaymarcherShader::setAspectRatio(float aspect_ratio) {
 void RaymarcherShader::setShapeID(i32 shapeID) {
   use();
   m_shapeIDUniform.int32(shapeID);
+}
+
+void RaymarcherShader::setMaxSteps(i32 steps) {
+  use();
+  m_maxStepsUniform.int32(steps);
+}
+
+void RaymarcherShader::setMaxDist(float dist) {
+  use();
+  m_maxDistUniform.float32(dist);
+}
+
+void RaymarcherShader::setEpsilon(float epsilon) {
+  use();
+  m_epsilonUniform.float32(epsilon);
 }
