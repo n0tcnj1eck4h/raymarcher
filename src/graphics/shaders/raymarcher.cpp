@@ -48,15 +48,20 @@ static const char *frag_source = GLSL_VERSION_HEADER
     }
 
     float sceneSDF(vec3 ray) {
-        ray = mod(ray + vec3(2), 4) - vec3(2);
+        ray = mod(ray + vec3(4), 8) - vec3(4);
         if(shapeID == 0)
             return sphereSDF(ray, vec3(0, 0, 0));
         else if(shapeID == 1)
             return boxSDF(ray, vec3(1, 1, 1));
-        else {
+        else if(shapeID == 2) {
             float floor    = min(boxSDF(ray, vec3(1.5, 0.1, 2.0)), boxSDF(ray, vec3(2.0, 0.1, 1.5)));
             float walls    = min(boxSDF(ray, vec3(0.2, 2.0, 1.0)), boxSDF(ray, vec3(1.0, 2.0, 0.2)));
             return min(floor, walls);
+        } else {
+            float shape1 = sphereSDF(ray, vec3(-0.5, 0, 0));
+            float shape2 = sphereSDF(ray, vec3(0.5, 0, 0));
+            float shaft = boxSDF(ray - vec3(0, 2, 0), vec3(0.5, 2, 0.5));
+            return min(min(shape1, shape2), shaft);
         }
     }
 

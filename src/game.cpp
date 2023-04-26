@@ -52,6 +52,7 @@ void Game::update() {
 
     if (ImGui::RadioButton("Sphere", &shapeID, 0) ||
         ImGui::RadioButton("Cube", &shapeID, 1) ||
+        // ImGui::RadioButton("Test", &shapeID, 69) ||
         ImGui::RadioButton("Tunnels", &shapeID, 2)) {
       m_renderer.m_raymarcher.setShapeID(shapeID);
     }
