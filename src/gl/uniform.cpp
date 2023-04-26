@@ -14,4 +14,5 @@ void GLUniform::vec3(const glm::vec3 &vector) {
   glUniform3fv(m_location, 1, glm::value_ptr(vector));
 }
 
-void GLUniform::scalar(float scalar) { glUniform1f(m_location, scalar); }
+void GLUniform::float32(float scalar) { glUniform1f(m_location, scalar); }
+void GLUniform::int32(i32 scalar) { glUniform1i(m_location, scalar); }

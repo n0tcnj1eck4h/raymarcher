@@ -17,6 +17,7 @@
 
 static glm::vec3 eyepos(0, 0, 0);
 static glm::vec3 dir = glm::vec3(0, 0, 1);
+static int shapeID = 0;
 
 Game::Game() : m_camera(0.01f, 100.0f, 16.0f / 9.0f, 80.0f) {
   m_frameTime = m_lastFrameTime = SDL_GetTicks64();
@@ -27,6 +28,7 @@ Game::Game() : m_camera(0.01f, 100.0f, 16.0f / 9.0f, 80.0f) {
   m_hasFocus = true;
 
   m_renderer.viewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+  m_renderer.m_raymarcher.setShapeID(shapeID);
 }
 
 Game::~Game() {}
@@ -42,8 +44,13 @@ void Game::update() {
 
   m_lastFrameTime = m_frameTime;
 
-  if (ImGui::Begin("Scene", nullptr))
-    ;
+  if (ImGui::Begin("Scene", nullptr)) {
+    if (ImGui::RadioButton("Sphere", &shapeID, 0) ||
+        ImGui::RadioButton("Cube", &shapeID, 1) ||
+        ImGui::RadioButton("Tunnels", &shapeID, 2)) {
+      m_renderer.m_raymarcher.setShapeID(shapeID);
+    }
+  }
   ImGui::End();
 
   // eyepos = glm::rotate(eyepos, (float)(m_frameTime) / 100.0f / 3.14f,

@@ -30,6 +30,7 @@ static const char *frag_source = GLSL_VERSION_HEADER
     // };
 
     uniform vec3 eye;
+    uniform int shapeID;
 
     out vec4 FragColor;
     in vec3 rayDirection;
@@ -49,10 +50,15 @@ static const char *frag_source = GLSL_VERSION_HEADER
 
     float sceneSDF(vec3 ray) {
         ray = mod(ray + vec3(2), 4) - vec3(2);
-        // float floor    = min(boxSDF(ray, vec3(1.5, 0.1, 2.0)), boxSDF(ray, vec3(2.0, 0.1, 1.5)));
-        // float walls    = min(boxSDF(ray, vec3(0.2, 2.0, 1.0)), boxSDF(ray, vec3(1.0, 2.0, 0.2)));
-        // return min(floor, walls);
-        return sphereSDF(ray, vec3(0, 0, 0));
+        if(shapeID == 0)
+            return sphereSDF(ray, vec3(0, 0, 0));
+        else if(shapeID == 1)
+            return boxSDF(ray, vec3(1, 1, 1));
+        else {
+            float floor    = min(boxSDF(ray, vec3(1.5, 0.1, 2.0)), boxSDF(ray, vec3(2.0, 0.1, 1.5)));
+            float walls    = min(boxSDF(ray, vec3(0.2, 2.0, 1.0)), boxSDF(ray, vec3(1.0, 2.0, 0.2)));
+            return min(floor, walls);
+        }
     }
 
     vec3 estimateNormal(vec3 p) {
@@ -102,7 +108,8 @@ static const char *frag_source = GLSL_VERSION_HEADER
 RaymarcherShader::RaymarcherShader()
     : GLProgram(vert_source, frag_source), m_dirUniform(getUniform("dir")),
       m_eyeUniform(getUniform("eye")),
-      m_aspectRatioUniform(getUniform("aspect_ratio")) {}
+      m_aspectRatioUniform(getUniform("aspect_ratio")),
+      m_shapeIDUniform(getUniform("shapeID")) {}
 
 void RaymarcherShader::setCameraDirection(const glm::vec3 &dir) {
   use();
@@ -116,5 +123,10 @@ void RaymarcherShader::setCameraPosition(const glm::vec3 &pos) {
 
 void RaymarcherShader::setAspectRatio(float aspect_ratio) {
   use();
-  m_aspectRatioUniform.scalar(aspect_ratio);
+  m_aspectRatioUniform.float32(aspect_ratio);
+}
+
+void RaymarcherShader::setShapeID(i32 shapeID) {
+  use();
+  m_shapeIDUniform.int32(shapeID);
 }
