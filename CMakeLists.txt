@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.15)
 project(cotmve-project VERSION 0.1 LANGUAGES CXX)
 
 option(USE_PREHISTORIC_GL "Use OpenGL 3.2 instead of 4.6" OFF)
-option(DEBUG "Use OpenGL 3.2 instead of 4.6" OFF)
+option(DEBUG "Debug" OFF)
 
 add_executable(cotmve 
   src/main.cpp
