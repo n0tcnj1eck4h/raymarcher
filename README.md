@@ -1,6 +1,15 @@
-# COTMVE-AQHTB
-Some kind of a renderer... I think. 
+# Raymarcher
+A fun little SDF/DDA based renderer written in GLSL/C++
 
+## Screenshots
+![Screenshot_20230629_160104](https://github.com/n0tcnj1eck4h/raymarcher/assets/48856951/d1753c58-d894-411d-9ff3-68f9d0794887)
+![Screenshot_20230629_160217](https://github.com/n0tcnj1eck4h/raymarcher/assets/48856951/dbd45f4a-6e56-4a31-b492-17b5254e5602)
+![Screenshot_20230629_160333](https://github.com/n0tcnj1eck4h/raymarcher/assets/48856951/98872aba-db60-412d-a995-5cc4a9175c41)
 
-![Screenshot_20230320_135816](https://user-images.githubusercontent.com/48856951/226346551-77256c5c-d32c-4ccf-8340-2bd54fa826a8.png)
-![Screenshot_20230320_140255](https://user-images.githubusercontent.com/48856951/226346743-1d228996-aeb9-4a49-a76c-2aed7ffac85b.png)
+## Building
+The required libraries are SDL2, glbinding and glm. They need to be installed on your system in one way or another.
+```
+$ cmake --B build -S .
+$ cmake --build build
+$ ./build/raymarcher
+```
