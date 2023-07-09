@@ -6,24 +6,23 @@ option(USE_PREHISTORIC_GL "Use OpenGL 3.2 instead of 4.6" OFF)
 option(DEBUG "Debug" OFF)
 
 add_executable(raymarcher 
-  src/main.cpp
-  src/gl/program.cpp
-  src/gl/uniform.cpp
-  src/gl/vao.cpp
-  src/gl/buffer.cpp
-  src/game.cpp
-  src/imgui/imgui_demo.cpp
-  src/imgui/imgui_draw.cpp
-  src/imgui/imgui_tables.cpp
-  src/imgui/imgui_impl_opengl3.cpp
-  src/imgui/imgui.cpp
-  src/imgui/imgui_impl_sdl2.cpp
-  src/imgui/imgui_widgets.cpp
-  src/graphics/camera.cpp
-  src/graphics/renderer.cpp
-  src/graphics/hwoctree.cpp
-  src/graphics/shaders/raymarcher.cpp
-  src/graphics/shaders/ddamarcher.cpp
+  raymarcher/main.cpp
+  raymarcher/gl/program.cpp
+  raymarcher/gl/uniform.cpp
+  raymarcher/gl/vao.cpp
+  raymarcher/gl/buffer.cpp
+  raymarcher/game.cpp
+  raymarcher/imgui/imgui_demo.cpp
+  raymarcher/imgui/imgui_draw.cpp
+  raymarcher/imgui/imgui_tables.cpp
+  raymarcher/imgui/imgui_impl_opengl3.cpp
+  raymarcher/imgui/imgui.cpp
+  raymarcher/imgui/imgui_impl_sdl2.cpp
+  raymarcher/imgui/imgui_widgets.cpp
+  raymarcher/graphics/camera.cpp
+  raymarcher/graphics/renderer.cpp
+  raymarcher/graphics/shaders/raymarcher.cpp
+  raymarcher/graphics/shaders/ddamarcher.cpp
 )
 
 if(USE_PREHISTORIC_GL)
@@ -34,8 +33,8 @@ if(DEBUG)
   target_compile_definitions(raymarcher PUBLIC DEBUG)
 endif()
 
-target_include_directories(raymarcher PUBLIC include)
-target_include_directories(raymarcher PUBLIC include/imgui)
+target_include_directories(raymarcher PUBLIC raymarcher)
+target_include_directories(raymarcher PUBLIC raymarcher/imgui)
 target_compile_features(raymarcher PUBLIC cxx_std_17)
 
 find_package(SDL2 REQUIRED)
