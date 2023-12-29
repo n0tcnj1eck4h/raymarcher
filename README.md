@@ -9,7 +9,7 @@ A fun little SDF/DDA based renderer written in GLSL/C++
 ## Building
 The required libraries are SDL2, glbinding and glm. They need to be installed on your system in one way or another.
 ```
-$ cmake --B build -S .
+$ cmake -B build -S .
 $ cmake --build build
 $ ./build/raymarcher
 ```
